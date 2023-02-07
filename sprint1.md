@@ -2,6 +2,24 @@
 
 ### **User Stories**
 
+1. Create a database
+   This task is done when the developer is able to see a defined database structure within mySql
+   ~1h
+2. Setup Go dev environment
+   This task is done when the developer can run a simple Go program through VSCode
+   ~1h
+3. Establish database schema
+   In mySql, create neccessary key relationships between tables and make sure each table has relevant information
+   This task is done when the developer can use SQL queries to navigate through the relational tables created
+   ~1h
+4. Access the database with go
+   Set up Go code to connect to database
+   This task is done when connection is working between Go backend and the mySql database
+   ~1h
+5. Create getClassPosts endpoint on go without logic
+   Implement Go logic, setup endpoint, and test that endpoint can send data
+   The task is done when within main the get function is set up and linked to a getClassPosts function
+   ~1h
 6. Add getClassPosts() logic with necessary queries and test cases (sorted by upvote column)
    Create an SQL query to get all posts from a given class ID
    Sort posts by most upvotes
@@ -30,37 +48,33 @@
 
 ### **Issues your team planned to address**
 
-Create an angular dev environment
+Create a database
 
-- Install: Node.js, npm, Angular CLI & Git CLI (if needed)
-- This task is done when the developer is able to code via Angular with VSCode and push changes to GitHub
-- ~1h
+- Create mySql database with mySQL CLI
+- Set up sql code
+- Create tables for classes with variable ids
+- Create a mock class to test on
+- 1 hour
 
-Install some kind of component library
+Setup go dev environment
 
-- Research component libraries and install the one that matches our design
-- This task is done when a component library has been installed and tested on the main page.
-- ~1h
+- This task is done when the developer can run a simple Go program through VSCode
+- Download VSCode, GO, and make a simple "Hello World" program
+- ~1 hour
 
-Implement hello world on the main page, a page for viewing posts, and a page for search results
+Establish database schema
 
-- Create pages on angular and implement navigation by url
-- This task is done when the user can switch between different pages by the url
-- ~1h
-
-Implement website header and navigation bar
-
-- Pick a color scheme, create a header, use tailwind and daisyUI to design buttons
-- This task is done when we have buttons that link to different pages/search bars on the Classical site
-- ~1h
+- This task is done when the developer can use SQL queries to navigate through the relational tables created
+- Create tables (w/ foreign keys, etc…)
+- Test queries to make sure relational tables working as intended
+- ~1 hours
 
 ### **Issues successfully completed**
 
-- Create an angular dev environment
-- Install some kind of component library
-- Implement hello world on the main page, a page for viewing posts, and a page for search results
+- Create a database
+- Setup go dev environment
+- Establish a database schema
 
 ### **Which ones didn't and why?**
 
-- Implement website header and navigation bar
-  - This issue was not completed becuase our team needs to meet to decide on a color scheme and UI inspiration.
+-N/A

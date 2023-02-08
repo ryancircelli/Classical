@@ -16,6 +16,13 @@ type Class struct {
 	className string
 }
 
+type Posts struct {
+	postID      int64
+	classID     int64
+	postName    string
+	postContent string
+}
+
 func main() {
 	// Capture connection properties.
 	cfg := mysql.Config{
@@ -42,7 +49,13 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Albums found: %v\n", classes)
+	fmt.Printf("Classes found: %v\n", classes)
+
+	posts, err := postsByClassID(1)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("posts found: %v\n", posts)
 
 }
 
@@ -68,4 +81,27 @@ func classesByName(name string) ([]Class, error) {
 		return nil, fmt.Errorf("classesByName %q: %v", name, err)
 	}
 	return classes, nil
+}
+
+func postsByClassID(ID int) ([]Posts, error) {
+	var posts []Posts
+
+	rows, err := db.Query("SELECT * FROM posts WHERE classID = ?", ID)
+
+	if err != nil {
+		return nil, fmt.Errorf("postsByClassID %q: %v", ID, err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var pos Posts
+		if err := rows.Scan(&pos.classID, &pos.postID, &pos.postName, &pos.postContent); err != nil {
+			return nil, fmt.Errorf("PostsByClassID %q: %v", ID, err)
+		}
+		posts = append(posts, pos)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("postsByClassID %q: %v", ID, err)
+	}
+	return posts, nil
 }

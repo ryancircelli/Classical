@@ -6,7 +6,7 @@ CREATE TABLE class (
 );
 
 DROP TABLE IF EXISTS posts;
-CREATE TABLE posts (
+CREATE TABLE post (
   postID    INT AUTO_INCREMENT NOT NULL,
   classID   INT REFERENCES class(id),
   postName  VARCHAR(128) NOT NULL,

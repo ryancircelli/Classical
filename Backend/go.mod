@@ -1,4 +1,4 @@
-module example/data-access
+module Classical/Backend
 
 go 1.19
 

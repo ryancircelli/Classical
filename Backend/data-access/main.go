@@ -4,9 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"os"
 
-	"github.com/go-sql-driver/mysql"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var db *sql.DB
@@ -25,16 +24,16 @@ type Posts struct {
 
 func main() {
 	// Capture connection properties.
-	cfg := mysql.Config{
-		User:   os.Getenv("DBUSER"), //root
-		Passwd: os.Getenv("DBPASS"), //CEN3031
-		Net:    "tcp",
-		Addr:   "127.0.0.1:3306",
-		DBName: "myClasses",
-	}
+	// cfg := mysql.Config{
+	// 	User:   os.Getenv("DBUSER"), //root
+	// 	Passwd: os.Getenv("DBPASS"), //CEN3031
+	// 	Net:    "tcp",
+	// 	Addr:   "127.0.0.1:3306",
+	// 	DBName: "myClasses",
+	// }
 	// Get a database handle.
 	var err error
-	db, err = sql.Open("mysql", cfg.FormatDSN())
+	db, err = sql.Open("mysql", "root:CEN3031@tcp(localhost:3306)/myClasses")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -45,27 +44,35 @@ func main() {
 	}
 	fmt.Println("Connected!")
 
-	classes, err := classesByName("CEN3031")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Classes found: %v\n", classes)
+	// classes, err := classesByName("CEN3031")
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Printf("Classes found: %v\n", classes)
 
-	posts, err := postsByClassID(1)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("posts found: %v\n", posts)
+	// posts, err := postsByClassID(1)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Printf("posts found: %v\n", posts)
 
-	pstID, err := addClassPost(Posts{
-		classID:     2,
-		postName:    "This class yes",
-		postContent: "YEAHH",
+	claID, err := addClass(Class{
+		className: "CIS4930",
 	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("ID of post Added: %v\n", pstID)
+	fmt.Printf("ID of class added: %v\n", claID)
+
+	// pstID, err := addClassPost(Posts{
+	// 	classID:     2,
+	// 	postName:    "This class yes",
+	// 	postContent: "YEAHH",
+	// })
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// fmt.Printf("ID of post Added: %v\n", pstID)
 
 }
 
@@ -116,9 +123,30 @@ func postsByClassID(ID int) ([]Posts, error) {
 	return posts, nil
 }
 
+func addClass(cla Class) (int64, error) {
+
+	class, err := classesByName(cla.className)
+
+	if len(class) == 1 {
+		return 0, fmt.Errorf("Class already exits") //Make sure class does not already exist
+	}
+
+	result, err := db.Exec("INSERT INTO class (className) VALUES (?)", cla.className)
+
+	if err != nil {
+		return 0, fmt.Errorf("addClass: %v", err)
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("addClass: %v", err)
+	}
+
+	return id, nil
+}
+
 // addClass adds the specified class into the database and returns the classID of the class
 func addClassPost(post Posts) (int64, error) {
-	result, err := db.Exec("INSERT INTO posts (classID, postName, postContent) VALUES (?,?,?,?)", post.classID, post.postName, post.postContent)
+	result, err := db.Exec("INSERT INTO posts (classID, postName, postContent) VALUES (?,?,?)", post.classID, post.postName, post.postContent)
 
 	if err != nil {
 		return 0, fmt.Errorf("addClassPost: %v", err)

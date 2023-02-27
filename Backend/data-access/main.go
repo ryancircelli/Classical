@@ -26,8 +26,8 @@ type Posts struct {
 func main() {
 	// Capture connection properties.
 	cfg := mysql.Config{
-		User:   os.Getenv("DBUSER"),
-		Passwd: os.Getenv("DBPASS"),
+		User:   os.Getenv("DBUSER"), //root
+		Passwd: os.Getenv("DBPASS"), //CEN3031
 		Net:    "tcp",
 		Addr:   "127.0.0.1:3306",
 		DBName: "myClasses",
@@ -57,9 +57,19 @@ func main() {
 	}
 	fmt.Printf("posts found: %v\n", posts)
 
+	pstID, err := addClassPost(Posts{
+		classID:     2,
+		postName:    "This class yes",
+		postContent: "YEAHH",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("ID of post Added: %v\n", pstID)
+
 }
 
-// albumsByArtist queries for albums that have the specified artist name.
+// classesByName queries for albums that have the specified class name.
 func classesByName(name string) ([]Class, error) {
 	// An albums slice to hold data from returned rows.
 	var classes []Class
@@ -104,4 +114,19 @@ func postsByClassID(ID int) ([]Posts, error) {
 		return nil, fmt.Errorf("postsByClassID %q: %v", ID, err)
 	}
 	return posts, nil
+}
+
+// addClass adds the specified class into the database and returns the classID of the class
+func addClassPost(post Posts) (int64, error) {
+	result, err := db.Exec("INSERT INTO posts (classID, postName, postContent) VALUES (?,?,?,?)", post.classID, post.postName, post.postContent)
+
+	if err != nil {
+		return 0, fmt.Errorf("addClassPost: %v", err)
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("addClassPost: %v", err)
+	}
+
+	return id, nil
 }

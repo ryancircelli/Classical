@@ -5,7 +5,7 @@ import { ResultsComponent } from './pages/results/results.component';
 import { HomeComponent } from './pages/home/home.component';
 
 const routes: Routes = [
-  { path: 'results', component: ResultsComponent },
+  { path: 'results/:search', component: ResultsComponent },
   { path: 'class', component: ClassComponent },
   { path: '', component: HomeComponent, pathMatch: 'full' },
 ];
@@ -14,4 +14,6 @@ const routes: Routes = [
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {
+  constructor() { }
+}

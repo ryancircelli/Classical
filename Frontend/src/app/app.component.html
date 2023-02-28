@@ -1,14 +1,10 @@
-<!-- <nav>
-  <a routerLink="/results">Results</a>
-  <a routerLink="/class">Class</a>
-</nav> -->
 <nav class="navbar bg-base-200">
   <div class="navbar-start">
-    <a class="btn btn-ghost normal-case text-xl" routerLink="/">{{title}}</a>
+    <a class="btn btn-ghost normal-case text-xl" [routerLink]="'/'">{{title}}</a>
   </div>
   <div class="navbar-end">
     <div class="form-control">
-      <input type="text" placeholder="Search" class="input input-bordered" />
+      <input type="text" [(ngModel)]="searchTerm" name="search" placeholder="Search" (keyup.enter)="onSubmit()" class="input input-bordered" data-cy="search"/>
     </div>
   </div>
 </nav>

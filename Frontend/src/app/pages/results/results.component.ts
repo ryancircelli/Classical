@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router'
 
-type Person = {
+type Class = {
   upvotes: number;
   downvotes: number;
   upvoted: boolean;
@@ -14,11 +15,19 @@ type Person = {
   templateUrl: './results.component.html',
   styleUrls: ['./results.component.css']
 })
-export class ResultsComponent {
+export class ResultsComponent implements OnInit {
 
-  constructor() {}
+  search: string = ""
 
-  results: Person[] = [{
+  constructor(private route: ActivatedRoute) { }
+
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      this.search = params.get('search') ?? "";
+    });
+  }
+
+  results: Class[] = [{
     upvotes: 4,
     downvotes: 3,
     upvoted: false,

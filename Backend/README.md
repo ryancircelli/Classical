@@ -31,4 +31,4 @@
 ![Alt text](/Backend/assets/createPost.png?raw=true "Create Post")
 
 *Get Posts By Class Id*
-![Alt text](/Backend/assets/getPostByClassId.png?raw=true "Get Posts By Class Id")
+![Alt text](/Backend/assets/getPostByClassID.png?raw=true "Get Posts By Class Id")

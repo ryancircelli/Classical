@@ -1,7 +1,15 @@
-<h1>{{title}}</h1>
-<nav>
-  <a routerLink="/">Home</a>
+<!-- <nav>
   <a routerLink="/results">Results</a>
   <a routerLink="/class">Class</a>
+</nav> -->
+<nav class="navbar bg-base-200">
+  <div class="navbar-start">
+    <a class="btn btn-ghost normal-case text-xl" routerLink="/">{{title}}</a>
+  </div>
+  <div class="navbar-end">
+    <div class="form-control">
+      <input type="text" placeholder="Search" class="input input-bordered" />
+    </div>
+  </div>
 </nav>
 <router-outlet></router-outlet>

@@ -8,6 +8,7 @@ type Class = {
   downvoted: boolean;
   name: string;
   dateUpdated: Date;
+  netVotes: number;
 };
 
 @Component({
@@ -25,23 +26,37 @@ export class ResultsComponent implements OnInit {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.search = params.get('search') ?? "";
     });
+    this.rankClasses();
   }
 
   results: Class[] = [{
-    upvotes: 4,
-    downvotes: 3,
-    upvoted: false,
-    downvoted: false,
-    name: "CEN3031",
-    dateUpdated: new Date
-  },
-  {
     upvotes: 2,
     downvotes: 4,
     upvoted: true,
     downvoted: false,
     name: "CIS4930",
-    dateUpdated: new Date
+    dateUpdated: new Date,
+    netVotes: 0
+  },
+  {
+    upvotes: 4,
+    downvotes: 3,
+    upvoted: false,
+    downvoted: false,
+    name: "CEN3031",
+    dateUpdated: new Date,
+    netVotes: 0
   }]
+  
 
+  rankClasses() {
+
+    this.results.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
+    
+    this.results.forEach((results, index) => results.netVotes = results.upvotes - results.downvotes);
+  }
+  
+  
 }
+
+

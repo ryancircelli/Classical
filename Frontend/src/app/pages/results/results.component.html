@@ -1,3 +1,32 @@
-<div>
-  {{ search }}
+
+
+<div class="overflow-x-auto flex flex-col items-center">
+  <div class="text-4xl font-serif py-4">Search Results For: {{search}}</div>
+  <div class="rounded-2xl w-[80%] overflow-hidden">
+  <table class="table w-full">
+    <thead>
+      <tr>
+        <th class="text-center align-middle w-24">Rank</th>
+        <th class="text-center align-middle w-24">Course Code</th>
+        <th class="text-right align-middle">Last Updated</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="hover" *ngFor="let class of results">
+        <td class="flex flex-row items-center justify-center space-x-2">
+          <!-- arrow icon -->
+          <div class="flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
+            </svg>
+          </div>
+          <!-- net votes -->
+          <span>{{ class.netVotes }}</span>
+        </td>
+        <td class="text-center align-middle">{{ class.name }}</td>
+        <td class="text-right align-middle text-gray-500"> {{ class.dateUpdated.toLocaleString() }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 </div>

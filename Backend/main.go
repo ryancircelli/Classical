@@ -27,6 +27,17 @@ func main() {
 	// router.HandleFunc("/posts", createPost).Methods("POST")
 	// router.HandleFunc("/posts/{id}", getPost).Methods("GET")
 	// router.HandleFunc("/posts/{id}", updatePost).Methods("PUT")
+
+	// Add CORS headers to all responses
+	headers := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
+			w.Header().Set("Access-Control-Allow-Methods", "GET")
+			next.ServeHTTP(w, r)
+		})
+	}
+	router.Use(headers)
+
 	http.ListenAndServe(":8000", router)
 
 	// posts, err := postsByClassID(1)

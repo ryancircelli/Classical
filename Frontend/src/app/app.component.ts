@@ -1,9 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { ClassAPIService } from './services/class.services'
-import { Class } from './types'
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -12,16 +9,8 @@ import { Class } from './types'
 export class AppComponent {
   title = 'Classical';
   searchTerm: string = "";
-  trending: Class[] = []
 
-  constructor(private router: Router, private classAPIService: ClassAPIService ) { }
-  
-  ngOnInit(): void {
-    this.classAPIService.getClasses().subscribe(data => {
-      this.trending = data;
-      console.log(data)
-    });
-  }
+  constructor(private router: Router) { }
 
   onSubmit() {
     if (this.searchTerm) {

@@ -1,15 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router'
-
-type Class = {
-  upvotes: number;
-  downvotes: number;
-  upvoted: boolean;
-  downvoted: boolean;
-  name: string;
-  dateUpdated: Date;
-  netVotes: number;
-};
+import { Class } from 'src/app/types';
 
 @Component({
   selector: 'app-results',
@@ -19,22 +10,13 @@ type Class = {
 export class ResultsComponent implements OnInit {
 
   search: string = ""
-
-  constructor(private route: ActivatedRoute) { }
-
-  ngOnInit(): void {
-    this.route.paramMap.subscribe((params: ParamMap) => {
-      this.search = params.get('search') ?? "";
-    });
-    this.rankClasses();
-  }
-
+  
   results: Class[] = [{
     upvotes: 2,
     downvotes: 4,
     upvoted: true,
     downvoted: false,
-    name: "CIS4930",
+    className: "CIS4930",
     dateUpdated: new Date,
     netVotes: 0
   },
@@ -43,17 +25,24 @@ export class ResultsComponent implements OnInit {
     downvotes: 3,
     upvoted: false,
     downvoted: false,
-    name: "CEN3031",
+    className: "CEN3031",
     dateUpdated: new Date,
     netVotes: 0
   }]
-  
 
-  rankClasses() {
+  constructor(private route: ActivatedRoute) { }
 
-    this.results.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
-    
-    this.results.forEach((results, index) => results.netVotes = results.upvotes - results.downvotes);
+  ngOnInit(): void {
+    this.route.paramMap.subscribe((params: ParamMap) => {
+      this.search = params.get('search') ?? "";
+    });
+    this.results = this.rankClasses(this.results);
+  }
+
+  rankClasses(results: Class[]) {
+    results.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
+    results.forEach((results, index) => results.netVotes = results.upvotes - results.downvotes);
+    return results;
   }
   
   

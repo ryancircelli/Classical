@@ -17,14 +17,21 @@ Display posts in the table with test data
    This task is done when the user is able to see a list of posts that are formatted
    ~2h
 
+Add trending posts on main page with getTrendingClasses
+   Grab trending posts from backend, auto-rank posts by popularity in ranked list, display ranked list on main page
+   This task is done when we have a section of the main page with functional hyperlinks to trending/popular classes
+   ~1h
+
 ### **Issues successfully completed**
 
 - Implement website header and navigation bar
 - Create searchable box on main page that opens page using search value
+- Display posts in the table with test data
 
 ### **Which ones didn't and why?**
 
-N/A
+- Add trending posts on main page with getTrendingClasses
+  - This was not completed because we could not figure out how to mock the api using cypress.
 
 ---
 
@@ -37,4 +44,3 @@ N/A
 ### **Issues successfully completed**
 
 ### **Which ones didn't and why?**
-

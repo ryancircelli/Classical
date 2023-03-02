@@ -144,33 +144,82 @@ Implement website header and navigation bar
 
 ### **Issues your team planned to address**
 
-Create a database
+Access the database with go
 
-- Create mySql database with mySQL CLI
-- Set up sql code
-- Create tables for classes with variable ids
-- Create a mock class to test on
-- 1 hour
+- Set up code in main.go to connect to the sql database using a mysql driver
+- Connection between go backend and mySql database is successful upon executing go main.go
+- ~1 hr
 
-Setup go dev environment
+Create getClassPosts endpoint on go with logic (5 and 6 combined)
 
-- This task is done when the developer can run a simple Go program through VSCode
-- Download VSCode, GO, and make a simple "Hello World" program
+- Implemented go logic, setup endpoint using mux to create an API between mysql and go
+- Get function is linked between getClassPosts in go code and classController.go and postController.go
 - ~1 hour
 
-Establish database schema
+  Test cases:
 
-- This task is done when the developer can use SQL queries to navigate through the relational tables created
-- Create tables (w/ foreign keys, etc…)
-- Test queries to make sure relational tables working as intended
-- ~1 hours
+  - query classes and response with a JSON object with classes that are in the database at the current time
+
+Create addPost() endpoint with logic (make sure to add logic to delete after x downvotes)
+
+- Setup in postController.go, bind the JSON received to a new JSON that is added to the database
+- endpoint is called and adds post to the database
+- Logic for votes not yet implemented
+- ~ 1 hour
+
+  Test cases:
+
+  - AddPost shown with json passed in with a classId and the postName along with the postContent
 
 ### **Issues successfully completed**
 
-- Create a database
-- Setup go dev environment
-- Establish a database schema
+- Access the database with go
+- Create getClassPosts endpoint on go with logic (5 and 6 combined)
+- Create addPost() endpoint with logic (make sure to add logic to delete after x downvotes)
 
 ### **Which ones didn't and why?**
 
--N/A
+- Logic for upvotes and downvotes is not yet implemented because of the complexity of adding and querying posts and classes thus far, will be added next sprint.
+
+- Test cases for backend using go test -v is difficult to use because of connecting to the mysql database and resources online are limited there are test cases shown using postman to demonstrate that the functions work correctly and also test cases shown that are almost complete
+
+## **Backend API Documentation **##
+
+_API Cookbook_
+
+## _Prequisites_
+
+1. Install MySQL
+2. Startup MySQL
+3. Connect to SQL localhost at port 3306 in MySQL workbench
+   -username: root
+   -password: password123
+   WARNING: may have to edit above credentials this based on SQL database computer settings
+   -This can be done by editing the file "db/db.go" and the statement _DB, err = sql.Open("mysql", "{username}:{password}@tcp(localhost:{port})/{schemaName}")_
+
+4. Create SQL schema named "classical"
+5. Run SQL queries in "data-access/create-tables.sql" to create the necessary tables by copy pasting the commands
+6. Install Go
+
+---
+
+_Running the server_
+
+1. Run the command "go run main.go"
+   - Make sure that "Connected"
+2. Go to Postman and follow API requests below to populate database
+
+_Create Class_
+![Alt text](/Backend/assets/createClass.png?raw=true "Create Class")
+
+_Delete Class_
+![Alt text](/Backend/assets/deleteClass.png?raw=true "Delete Class")
+
+_Get Classes_
+![Alt text](/Backend/assets/getClasses.png?raw=true "Get Classes")
+
+_Create Post_
+![Alt text](/Backend/assets/createPost.png?raw=true "Create Post")
+
+_Get Posts By Class Id_
+![Alt text](/Backend/assets/getPostByClassID.png?raw=true "Get Posts By Class Id")

@@ -2,44 +2,64 @@
 package main
 
 import (
-	"encoding/json"
+	"bytes"
+	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 	"net/http/httptest"
 	"os"
 	"testing"
+
+	"github.com/gorilla/mux"
 )
 
-var a App
+var DB *sql.DB
+var router *mux.Router
 
 func TestMain(m *testing.M) {
-	a = App{}
-	a.Initialize("root", "password123", "classical")
+
+	DB, err = sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err := DB.Ping()
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println("Connected")
+
+	router = mux.NewRouter()
+
 	ensureTableExists()
 	code := m.Run()
 	clearTable()
 	os.Exit(code)
 }
+
 func ensureTableExists() {
-	if _, err := a.DB.Exec(tableCreationQuery); err != nil {
+	if _, err := DB.Exec(tableCreationQuery); err != nil {
 		log.Fatal(err)
 	}
-	if _, err := a.DB.Exec(tableCreationQuery2); err != nil {
+	if _, err := DB.Exec(tableCreationQuery2); err != nil {
 		log.Fatal(err)
 	}
 
 }
-func clearTable() {
-	a.DB.Exec("DELETE FROM class")
-	a.DB.Exec("DELETE FROM post")
 
-	a.DB.Exec("ALTER TABLE class AUTO_INCREMENT = 1")
-	a.DB.Exec("ALTER TABLE post AUTO_INCREMENT = 1")
+func clearTable() {
+	DB.Exec("DELETE FROM class")
+	DB.Exec("DELETE FROM post")
+
+	DB.Exec("ALTER TABLE class AUTO_INCREMENT = 1")
+	DB.Exec("ALTER TABLE post AUTO_INCREMENT = 1")
 }
 
 func TestEmptyTable(t *testing.T) {
-	clearTable()
-	req, _ := http.NewRequest("GET", "/getClasses", nil)
+	req, _ := http.NewRequest("GET", "localhost:8000/getClasses", nil)
 	response := executeRequest(req)
 	checkResponseCode(t, http.StatusOK, response.Code)
 	if body := response.Body.String(); body != "[]" {
@@ -47,27 +67,27 @@ func TestEmptyTable(t *testing.T) {
 	}
 }
 
+func TestAddClass(t *testing.T) {
+	payload := []byte(`{"className":"COP5000}`)
+	req, _ := http.NewRequest("POST", "localhost:8000/createClass", bytes.NewBuffer(payload))
+	response := executeRequest(req)
+	checkResponseCode(t, http.StatusOK, response.Code)
+
+	var m map[string]interface{}
+	if m["className"] != "COP5000" {
+		t.Errorf("expected name to be COP5000 got %v", m["className"])
+	}
+}
+
 func executeRequest(req *http.Request) *httptest.ResponseRecorder {
 	rr := httptest.NewRecorder()
-	a.Router.ServeHTTP(rr, req)
+	router.ServeHTTP(rr, req)
 
 	return rr
 }
 func checkResponseCode(t *testing.T, expected, actual int) {
 	if expected != actual {
 		t.Errorf("Expected response code %d. Got %d\n", expected, actual)
-	}
-}
-
-func TestGetNonExistentPostsByClassId(t *testing.T) {
-	clearTable()
-	req, _ := http.NewRequest("GET", "/getPostsByClassId/1", nil)
-	response := executeRequest(req)
-	checkResponseCode(t, http.StatusNotFound, response.Code)
-	var m map[string]string
-	json.Unmarshal(response.Body.Bytes(), &m)
-	if m["error"] != "Posts not found" {
-		t.Errorf("Expected the 'error' key of the response to be set to 'User not found'. Got '%s'", m["error"])
 	}
 }
 

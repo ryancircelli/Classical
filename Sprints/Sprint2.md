@@ -57,40 +57,36 @@
 
 ### **Issues your team planned to address**
 
-Create an angular dev environment
-
-- Install: Node.js, npm, Angular CLI & Git CLI (if needed)
-- This task is done when the developer is able to code via Angular with VSCode and push changes to GitHub
-- ~1h
-
-Install some kind of component library
-
-- Research component libraries and install the one that matches our design
-- This task is done when a component library has been installed and tested on the main page.
-- ~1h
-
-Implement hello world on the main page, a page for viewing posts, and a page for search results
-
-- Create pages on angular and implement navigation by url
-- This task is done when the user can switch between different pages by the url
-- ~1h
-
 Implement website header and navigation bar
+   Pick a color scheme, create a header, use tailwind and daisyUI to design buttons
+   This task is done when we have buttons that link to different pages/search bars on the Classical site
+   ~1h
 
-- Pick a color scheme, create a header, use tailwind and daisyUI to design buttons
-- This task is done when we have buttons that link to different pages/search bars on the Classical site
-- ~1h
+Create searchable box on main page that opens page using search value
+   The user is able to search in the search bar, and open the results page of the desired search input.
+   This task will be done when users can see/access a search box and type in said search box. A cypress unit test is implemented to test the page opening.
+   ~2h
+
+Display posts in the table with test data
+   Use mock data to display a table of user posts on the results page
+   This task is done when the user is able to see a list of posts that are formatted
+   ~2h
+
+Add trending posts on main page with getTrendingClasses
+   Grab trending posts from backend, auto-rank posts by popularity in ranked list, display ranked list on main page
+   This task is done when we have a section of the main page with functional hyperlinks to trending/popular classes
+   ~1h
 
 ### **Issues successfully completed**
 
-- Create an angular dev environment
-- Install some kind of component library
-- Implement hello world on the main page, a page for viewing posts, and a page for search results
+- Implement website header and navigation bar
+- Create searchable box on main page that opens page using search value
+- Display posts in the table with test data
 
 ### **Which ones didn't and why?**
 
-- Implement website header and navigation bar
-  - This issue was not completed becuase our team needs to meet to decide on a color scheme and UI inspiration.
+- Add trending posts on main page with getTrendingClasses
+  - This was not completed because we could not figure out how to mock the api using cypress.
 
 ---
 

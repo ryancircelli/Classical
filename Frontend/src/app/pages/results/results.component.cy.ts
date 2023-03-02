@@ -2,13 +2,15 @@ import { ResultsComponent } from "./results.component";
 import { TestBed } from "@angular/core/testing";
 import { Class } from 'src/app/types';
 import { expect } from 'chai';
+import { RouterTestingModule } from "@angular/router/testing";
 
 describe('rankClasses()', () => {
     let resultsComponent: ResultsComponent;
 
     beforeEach(()=>{
-        TestBed.configureTestingModule({
-            providers: [ResultsComponent]
+      TestBed.configureTestingModule({
+          imports: [RouterTestingModule],
+          providers: [ResultsComponent]
         })
 
         resultsComponent = TestBed.inject(ResultsComponent);

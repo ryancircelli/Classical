@@ -1,0 +1,120 @@
+{
+	"info": {
+		"_postman_id": "34756077-99a8-4960-8620-43b3317bf667",
+		"name": "Classical",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16405329"
+	},
+	"item": [
+		{
+			"name": "Get Classes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/getClasses",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"getClasses"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Class",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"className\": \"CIS4930\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/createClass",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"createClass"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Class",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/deleteClass/CIS4930",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"deleteClass",
+						"CIS4930"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Post",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"classID\": \"1\",\n    \"postName\": \"Discord Link Class 1\",\n    \"postContent\": \"www.discord.com Class 1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/createClassPost",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"createClassPost"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Post By Class ID",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8000/getPostsByClassId/2",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"getPostsByClassId",
+						"2"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

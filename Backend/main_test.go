@@ -2,6 +2,7 @@
 package main
 
 import (
+	"Classical/Backend/testMain"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -10,10 +11,10 @@ import (
 	"testing"
 )
 
-var a App
+var a testMain.App
 
 func TestMain(m *testing.M) {
-	a = App{}
+	a = testMain.App{}
 	a.Initialize("root", "password123", "classical")
 	ensureTableExists()
 	code := m.Run()

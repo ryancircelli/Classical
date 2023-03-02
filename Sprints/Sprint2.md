@@ -144,39 +144,33 @@ Implement website header and navigation bar
 
 ### **Issues your team planned to address**
 
-Access the database with go
+Create a database
 
-- Set up code in main.go to connect to the sql database using a mysql driver
-- Connection between go backend and mySql database is successful upon executing go main.go
-- ~1 hr
+- Create mySql database with mySQL CLI
+- Set up sql code
+- Create tables for classes with variable ids
+- Create a mock class to test on
+- 1 hour
 
-Create getClassPosts endpoint on go with logic (5 and 6 combined)
+Setup go dev environment
 
-- Implemented go logic, setup endpoint using mux to create an API between mysql and go
-- Get function is linked between getClassPosts in go code and classController.go and postController.go
+- This task is done when the developer can run a simple Go program through VSCode
+- Download VSCode, GO, and make a simple "Hello World" program
 - ~1 hour
 
-  Test cases:
+Establish database schema
 
-  -
-
-Create addPost() endpoint with logic (make sure to add logic to delete after x downvotes)
-
-- Setup in postController.go, bind the JSON received to a new JSON that is added to the database
-- endpoint is called and adds post to the database
-- Logic for votes not yet implemented
-- ~ 1 hour
-
-  Test cases:
-
-  -
+- This task is done when the developer can use SQL queries to navigate through the relational tables created
+- Create tables (w/ foreign keys, etc…)
+- Test queries to make sure relational tables working as intended
+- ~1 hours
 
 ### **Issues successfully completed**
 
-- Access the database with go
-- Create getClassPosts endpoint on go with logic (5 and 6 combined)
-- Create addPost() endpoint with logic (make sure to add logic to delete after x downvotes)
+- Create a database
+- Setup go dev environment
+- Establish a database schema
 
 ### **Which ones didn't and why?**
 
-- Logic for upvotes and downvotes is not yet implemented because of the complexity of adding and querying posts and classes thus far, will be added next sprint.
+-N/A

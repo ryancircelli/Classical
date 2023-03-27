@@ -1,8 +1,8 @@
 package service
 
 import (
-	"Classical/Backend/db"
 	obj "Classical/Backend/model"
+	"database/sql"
 	f "fmt"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -10,10 +10,15 @@ import (
 
 // classesByName queries for albums that have the specified class name.
 func ClassesByName(name string) ([]obj.Class, error) {
-	// An albums slice to hold data from returned rows.
+	// An albums slice to hold data from returned rows
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
 	var classes []obj.Class
 
-	rows, err := db.DB.Query("SELECT * FROM class WHERE className = ?", name)
+	rows, err := db.Query("SELECT * FROM class WHERE className = ?", name)
 	if err != nil {
 		return nil, f.Errorf("classesByName %q: %v", name, err)
 	}

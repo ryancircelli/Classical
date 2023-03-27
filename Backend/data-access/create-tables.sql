@@ -14,3 +14,8 @@ CREATE TABLE post (
   postContent VARCHAR(128) NOT NULL,
   PRIMARY KEY (`postID`)
 );
+
+INSERT INTO class
+  (className)
+VALUES
+  ('COP5000')

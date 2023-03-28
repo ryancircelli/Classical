@@ -44,8 +44,6 @@ export class ResultsComponent implements OnInit {
     results.forEach((results, index) => results.netVotes = results.upvotes - results.downvotes);
     return results;
   }
-  
-  
 }
 
 

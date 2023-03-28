@@ -1,21 +1,74 @@
 package controller
 
 import (
-	"Classical/Backend/db"
 	obj "Classical/Backend/model"
+	"database/sql"
 	"encoding/json"
-	f "fmt"
+	"fmt"
 	"io/ioutil"
 	"net/http"
-
-	"strconv"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 )
 
 func CreateClassPost(w http.ResponseWriter, r *http.Request) {
-	stmt, err := db.DB.Prepare("INSERT INTO post(classId, postName, postContent) VALUES(?, ?, ?)")
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+
+	decoder := json.NewDecoder(r.Body)
+	var post obj.Post
+	err = decoder.Decode(&post)
+	if err != nil {
+		panic(err.Error())
+	}
+	stmt, err := db.Prepare("INSERT INTO post(classId, postName, postContent) VALUES(?, ?, ?)")
+	if err != nil {
+		panic(err.Error())
+	}
+	defer stmt.Close()
+	res, err := stmt.Exec(post.ClassID, post.PostName, post.PostContent)
+	if err != nil {
+		panic(err.Error())
+	}
+	if rowsAffected, _ := res.RowsAffected(); rowsAffected == 1 {
+		id, _ := res.LastInsertId()
+		post.PostID = int64(id)
+		respondWithJSON(w, http.StatusOK, post)
+	}
+
+	// stmt, err := db.Prepare("INSERT INTO post(classId, postName, postContent) VALUES(?, ?, ?)")
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
+	// body, err := ioutil.ReadAll(r.Body)
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
+	// keyVal := make(map[string]string)
+	// json.Unmarshal(body, &keyVal)
+	// classId := keyVal["classID"]
+	// postName := keyVal["postName"]
+	// postContent := keyVal["postContent"]
+	// intVar, err := strconv.Atoi(classId)
+	// _, err = stmt.Exec(intVar, postName, postContent)
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
+	// f.Fprintf(w, "New post was created")
+}
+
+func IncreasePostVote(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	params := mux.Vars(r)
+	stmt, err := db.Prepare("UPDATE post SET postVotes = postVotes + 1 WHERE postID = ?")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -25,33 +78,58 @@ func CreateClassPost(w http.ResponseWriter, r *http.Request) {
 	}
 	keyVal := make(map[string]string)
 	json.Unmarshal(body, &keyVal)
-	classId := keyVal["classID"]
-	postName := keyVal["postName"]
-	postContent := keyVal["postContent"]
-	intVar, err := strconv.Atoi(classId)
-	_, err = stmt.Exec(intVar, postName, postContent)
+	_, err = stmt.Exec(params["postID"])
 	if err != nil {
 		panic(err.Error())
 	}
-	f.Fprintf(w, "New post was created")
+	fmt.Fprintf(w, "Post with ID = %s was updated", params["postID"])
+}
+
+func DecreasePostVotes(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	params := mux.Vars(r)
+	stmt, err := db.Prepare("UPDATE post SET postVotes = postVotes - 1 WHERE postID = ?")
+	if err != nil {
+		panic(err.Error())
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err.Error())
+	}
+	keyVal := make(map[string]string)
+	json.Unmarshal(body, &keyVal)
+	_, err = stmt.Exec(params["postID"])
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Fprintf(w, "Post with ID = %s was updated", params["postID"])
 }
 
 func GetClassPosts(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
+	//w.Header().Set("Content-Type", "application/json")
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
 	var posts []obj.Post
 	params := mux.Vars(r)
-	result, err := db.DB.Query("SELECT * FROM post WHERE classID = ?", params["classID"])
+	result, err := db.Query("SELECT * FROM post WHERE classID = ?", params["classID"])
 	if err != nil {
 		panic(err.Error())
 	}
 	defer result.Close()
 	var post obj.Post
 	for result.Next() {
-		err := result.Scan(&post.PostID, &post.ClassID, &post.PostName, &post.PostContent)
+		err := result.Scan(&post.PostID, &post.ClassID, &post.PostName, &post.PostContent, &post.PostVotes)
 		if err != nil {
 			panic(err.Error())
 		}
 		posts = append(posts, post)
 	}
-	json.NewEncoder(w).Encode(posts)
+	respondWithJSON(w, http.StatusOK, posts)
 }

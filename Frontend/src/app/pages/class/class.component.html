@@ -1,26 +1,37 @@
 <div class="overflow-x-auto flex flex-col items-center">
-    <div class="text-4xl  py-4">Posts For: <span class="text-gray-500  text-4xl">{{class}}</span></div>
+    <div class="text-4xl py-4">Posts For: <span class="text-gray-500 text-4xl">{{class}}</span></div>
     <div class="rounded-2xl w-[80%] overflow-hidden">
-      <div class="w-full">
-        <div class="flex justify-between  py-3 px-6 bg-gray-200 border-b border-gray-300 text-sm">
-          <div class="w-1/4 text-left  text-xl">Rank</div>
-          <div class="w-3/4 text-left pl-6  text-xl">Link</div>
+      <div class="w-full border border-gray-300 rounded-2xl overflow-hidden">
+        <div class="flex py-3 px-6 bg-base-300 border-b border-gray-300 text-sm">
+          <div class="w-1/4 text-left text-xl">Rank</div>
+          <div class="w-3/4 text-left pl-6 text-xl">Link</div>
         </div>
         <div class="divide-y divide-gray-300">
-          <div class="flex items-center justify-between py-2 px-6 hover:bg-gray-100 cursor-pointer">
+          <a class="flex items-center justify-between py-2 px-6 hover:bg-base-200 cursor-pointer" style="background-color: #2A303C;">
             <div class="flex items-center w-1/4">
-              <div class="flex items-center justify-center  text-xl">
-                <p style="margin-right: 24px;">1.</p>
+              <div class="flex flex-col">
+                <div style="padding: 1px;"></div>
+                <a class="btn btn-ghost btn-xs">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
+                    </svg>
+                </a>
+                <div class="text-center text-xl">
+                    <p>1</p>
+                </div>
+                <a class="btn btn-ghost btn-xs" style="display: flex; align-items: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                    </svg>
+                  </a>                  
+                <div style="padding: 1px;"></div>
               </div>
+              <!-- net votes -->
             </div>
             <div class="text-left pl-6 w-3/4">
               <div class="flex items-center justify-start">
-                <p class=" text-lg text-xl"><a href="https://groupme.com/CHOSEN_CLASS" class="text-blue-500 hover:underline  text-xl">https://groupme.com/CHOSEN_CLASS</a></p>
+                <p class="text-lg text-xl"><a href="https://groupme.com/CHOSEN_CLASS" class="text-blue-500 hover:underline text-xl">https://groupme.com/CHOSEN_CLASS</a></p>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+          </a>
   

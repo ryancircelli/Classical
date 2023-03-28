@@ -8,13 +8,15 @@ import { AppComponent } from './app.component';
 import { ResultsComponent } from './pages/results/results.component';
 import { ClassComponent } from './pages/class/class.component';
 import { HomeComponent } from './pages/home/home.component';
+import { AddClassComponent } from './pages/class/add-class/add-class.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ResultsComponent,
     ClassComponent,
-    HomeComponent
+    HomeComponent,
+    AddClassComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,11 @@
+<div class="overflow-x-auto flex flex-col items-center">
+  <div class="text-4xl  py-4">Add Class</div>
+  <form (ngSubmit)="submitNewClass()">
+    <div class="flex flex-col items-center justify-center h-full">
+      <input type="text" placeholder="Enter Class Code" name="className" class="py-2 px-4 rounded-lg border-gray-300 bg-base-200" [(ngModel)]="newClass" (keyup.enter)="submitNewClass()">
+      <div class="text-sm pt-2">Ex: CEN3031</div>
+      <button type="submit" class="btn btn-ghost bg-base-200 my-4">Add Class</button>
+      <div *ngIf="errorMessage" class="text-red-500 mt-2">{{ errorMessage }}</div>
+    </div>
+  </form>
+</div>

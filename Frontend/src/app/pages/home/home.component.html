@@ -1,31 +1,37 @@
-
 <div class="overflow-x-auto flex flex-col items-center">
-    <div class="text-4xl font-serif py-4">Trending Classes</div>
-    <div class="rounded-2xl w-[80%] overflow-hidden">
-    <table class="table w-full">
-      <thead>
-        <tr>
-          <th class="text-center align-middle w-24">Rank</th>
-          <th class="text-center align-middle w-24">Course Code</th>
-          <th class="text-right align-middle">Last Updated</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="hover" *ngFor="let class of trending">
-          <td class="flex flex-row items-center justify-center space-x-2">
+  <div class="text-4xl  py-4">Trending Classes</div>
+  <div class="rounded-2xl w-[80%] overflow-hidden">
+    <div class="w-full border border-gray-300 rounded-2xl overflow-hidden">
+      <div class="flex  py-3 px-6 bg-base-300 border-b border-gray-300 text-sm">
+        <div class="flex items-center w-1/4">
+          <div class="text-left text-xl ">Rank</div>
+        </div>
+        <div class="w-1/4 text-center text-xl ">Course Code</div>
+        <div class="w-1/2 text-right pr-6 text-xl ">Last Updated</div>
+      </div>
+      <div class="divide-y divide-gray-300">
+        <a class="flex items-center justify-between py-2 px-6 hover:bg-base-200 cursor-pointer" *ngFor="let class of trending" [routerLink]="['/class/'+class.className]">
+          <div class="flex items-center w-1/4">
             <!-- arrow icon -->
             <div class="flex items-center justify-center">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
+                <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
               </svg>
             </div>
             <!-- net votes -->
-            <span>{{ class.netVotes }}</span>
-          </td>
-          <td class="text-center align-middle">{{ class.className }}</td>
-          <td class="text-right align-middle text-gray-500"> {{ class.dateUpdated && class.dateUpdated.toLocaleString() }}</td>
-        </tr>
-      </tbody>
-    </table>
+            <div class=" text-xl">
+              <span>{{ class.netVotes }}</span>
+            </div>
+            <div style="padding: 24px;"></div>
+          </div>
+          <div class="text-center w-1/4 align-middle text-xl ">
+            <span class="block">{{ class.className }}</span>
+          </div>
+          <div class="text-right pr-6 w-1/2 text-xl ">
+            <span class="text-gray-500 text-sm">{{ class.dateUpdated.toLocaleString() }}</span>
+          </div>
+        </a>
+      </div>
+    </div>
   </div>
-  </div>
+</div>

@@ -35,3 +35,15 @@
 
 *Get Posts By Class Id*
 ![Alt text](/Backend/assets/getPostByClassID.png?raw=true "Get Posts By Class Id")
+
+*Increase Post Votes*
+![Alt text](/Backend/assets/increasePostVotes.png?raw=true "Increase Post Votes")
+
+*Decrease Post Votes*
+![Alt text](/Backend/assets/decreasePostVotes.png?raw=true "Decrease Post Votes")
+
+*Search Class By Name*
+![Alt text](/Backend/assets/searchClassesByName.png?raw=true "Search Class By Name")
+
+*Get Trending Classes*
+![Alt text](/Backend/assets/getTrendingClasses.png?raw=true "Get Trending Classes")

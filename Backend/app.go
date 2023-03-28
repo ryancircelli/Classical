@@ -39,4 +39,6 @@ func (a *App) initializeRoutes() {
 	//post API endpoints and functionality
 	a.Router.HandleFunc("/createClassPost", controller.CreateClassPost).Methods("POST")
 	a.Router.HandleFunc("/getPostsByClassId/{classID}", controller.GetClassPosts).Methods("GET")
+
+	a.Router.HandleFunc("/getPostsByClassId/{classID}", controller.GetClassPosts).Methods("GET")
 }

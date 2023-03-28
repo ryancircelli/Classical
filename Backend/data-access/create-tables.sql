@@ -11,7 +11,7 @@ CREATE TABLE post (
   classID   INT,
   FOREIGN KEY (classID) REFERENCES class(id),
   postName  VARCHAR(128) NOT NULL,
-  postContent VARCHAR(128) NOT NULL,
+  postContent VARCHAR(128) NOT NULL DEFAULT 0,
   PRIMARY KEY (`postID`)
 );
 

@@ -4,6 +4,8 @@ import (
 	obj "Classical/Backend/model"
 	"database/sql"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -59,6 +61,54 @@ func CreateClassPost(w http.ResponseWriter, r *http.Request) {
 	// f.Fprintf(w, "New post was created")
 }
 
+func IncreasePostVote(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	params := mux.Vars(r)
+	stmt, err := db.Prepare("UPDATE post SET postVotes = postVotes + 1 WHERE postID = ?")
+	if err != nil {
+		panic(err.Error())
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err.Error())
+	}
+	keyVal := make(map[string]string)
+	json.Unmarshal(body, &keyVal)
+	_, err = stmt.Exec(params["postID"])
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Fprintf(w, "Post with ID = %s was updated", params["postID"])
+}
+
+func DecreasePostVotes(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+	params := mux.Vars(r)
+	stmt, err := db.Prepare("UPDATE post SET postVotes = postVotes - 1 WHERE postID = ?")
+	if err != nil {
+		panic(err.Error())
+	}
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		panic(err.Error())
+	}
+	keyVal := make(map[string]string)
+	json.Unmarshal(body, &keyVal)
+	_, err = stmt.Exec(params["postID"])
+	if err != nil {
+		panic(err.Error())
+	}
+	fmt.Fprintf(w, "Post with ID = %s was updated", params["postID"])
+}
+
 func GetClassPosts(w http.ResponseWriter, r *http.Request) {
 	//w.Header().Set("Content-Type", "application/json")
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
@@ -75,7 +125,7 @@ func GetClassPosts(w http.ResponseWriter, r *http.Request) {
 	defer result.Close()
 	var post obj.Post
 	for result.Next() {
-		err := result.Scan(&post.PostID, &post.ClassID, &post.PostName, &post.PostContent)
+		err := result.Scan(&post.PostID, &post.ClassID, &post.PostName, &post.PostContent, &post.PostVotes)
 		if err != nil {
 			panic(err.Error())
 		}

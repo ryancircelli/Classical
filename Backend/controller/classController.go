@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -13,34 +14,19 @@ import (
 )
 
 func GetClasses(w http.ResponseWriter, r *http.Request) {
-	// var classes []obj.Class
-	// result, err := db.DB.Query("SELECT * from class")
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-	// defer result.Close()
-	// for result.Next() {
-	// 	var class obj.Class
-	// 	err := result.Scan(&class.ID, &class.ClassName)
-	// 	if err != nil {
-	// 		panic(err.Error())
-	// 	}
-	// 	classes = append(classes, class)
-	// }
-	// respondWithJSON(w, http.StatusOK, classes)
-
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
-
 	if err != nil {
 		panic(err)
 	}
-	//w.Header().Set("Content-Type", "application/json")
+	defer db.Close()
+
 	var classes []obj.Class
-	result, err := db.Query("SELECT * from class")
+	result, err := db.Query("SELECT id, className from class")
 	if err != nil {
 		panic(err.Error())
 	}
 	defer result.Close()
+
 	for result.Next() {
 		var class obj.Class
 		err := result.Scan(&class.ID, &class.ClassName)
@@ -49,8 +35,133 @@ func GetClasses(w http.ResponseWriter, r *http.Request) {
 		}
 		classes = append(classes, class)
 	}
-	//json.NewEncoder(w).Encode(classes)
-	respondWithJSON(w, http.StatusOK, classes)
+
+	// Convert the classes to ClassWithoutTotalVotes
+	classesWithoutTotalVotes := make([]obj.ClassWithoutTotalVotes, len(classes))
+	for i, class := range classes {
+		classesWithoutTotalVotes[i] = obj.ClassWithoutTotalVotes{Class: class}
+	}
+
+	respondWithJSON(w, http.StatusOK, classesWithoutTotalVotes)
+}
+
+func getSortedClasses(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("mysql", "username:password@tcp(127.0.0.1:3306)/your_database")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	query := `
+		SELECT c.id, c.className, SUM(p.postVotes) as total_votes
+		FROM class c
+		LEFT JOIN post p ON c.id = p.classID
+		GROUP BY c.id, c.className
+		ORDER BY total_votes DESC;
+	`
+
+	rows, err := db.Query(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	classes := make([]obj.Class, 0)
+
+	for rows.Next() {
+		var class obj.Class
+		err := rows.Scan(&class.ID, &class.ClassName, &class.TotalVotes)
+		if err != nil {
+			log.Fatal(err)
+		}
+		classes = append(classes, class)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(classes)
+}
+
+func GetClassByName(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	if err != nil {
+		panic(err)
+	}
+
+	params := mux.Vars(r)
+	result, err := db.Query("SELECT id, className from class WHERE className = ?", params["className"])
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer result.Close()
+
+	var class obj.ClassWithoutTotalVotes
+
+	for result.Next() {
+		err := result.Scan(&class.ID, &class.ClassName)
+		if err != nil {
+			panic(err.Error())
+		}
+	}
+
+	if class.ClassName == "" && class.ID == 0 {
+		respondWithJSON(w, http.StatusBadRequest, nil)
+	} else {
+		jsonData, err := json.Marshal(class)
+		if err != nil {
+			panic(err.Error())
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonData)
+	}
+}
+
+func GetSortedClasses(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+
+	if err != nil {
+		panic(err)
+	}
+
+	defer db.Close()
+
+	query := `
+		SELECT c.id, c.className, COALESCE(SUM(p.postVotes), 0) as total_votes
+		FROM class c
+		LEFT JOIN post p ON c.id = p.classID
+		GROUP BY c.id, c.className
+		ORDER BY total_votes DESC;
+	`
+
+	rows, err := db.Query(query)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	classes := make([]obj.Class, 0)
+
+	for rows.Next() {
+		var class obj.Class
+		err := rows.Scan(&class.ID, &class.ClassName, &class.TotalVotes)
+		if err != nil {
+			log.Fatal(err)
+		}
+		classes = append(classes, class)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(classes)
 }
 
 func CreateClass(w http.ResponseWriter, r *http.Request) {
@@ -116,6 +227,13 @@ func DeleteClass(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	params := mux.Vars(r)
+
+	// Delete all associated posts before deleting the class
+	_, err = db.Exec("DELETE FROM post WHERE classID = (SELECT id FROM class WHERE className = ?)", params["className"])
+	if err != nil {
+		panic(err.Error())
+	}
+
 	stmt, err := db.Prepare("DELETE FROM class WHERE className = ?")
 	if err != nil {
 		panic(err.Error())

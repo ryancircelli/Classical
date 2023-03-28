@@ -24,6 +24,14 @@ func main() {
 	router.HandleFunc("/createClassPost", controller.CreateClassPost).Methods("POST")
 	router.HandleFunc("/getPostsByClassId/{classID}", controller.GetClassPosts).Methods("GET")
 
+	router.HandleFunc("/getPostsByClassId/{classID}", controller.GetClassPosts).Methods("GET")
+
+	//API call for post votes
+	router.HandleFunc("/increasePostVotes/{postID}", controller.IncreasePostVote).Methods("PUT")
+	router.HandleFunc("/decreasePostVotes/{postID}", controller.DecreasePostVotes).Methods("PUT")
+	router.HandleFunc("/getClassesByName/{className}", controller.GetClassByName).Methods("GET")
+	router.HandleFunc("/getTrendingClasses", controller.GetSortedClasses).Methods("GET")
+
 	// router.HandleFunc("/posts", createPost).Methods("POST")
 	// router.HandleFunc("/posts/{id}", getPost).Methods("GET")
 	// router.HandleFunc("/posts/{id}", updatePost).Methods("PUT")

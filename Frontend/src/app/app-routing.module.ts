@@ -6,7 +6,7 @@ import { HomeComponent } from './pages/home/home.component';
 
 const routes: Routes = [
   { path: 'results/:search', component: ResultsComponent },
-  { path: 'class', component: ClassComponent },
+  { path: 'class/:className', component: ClassComponent },
   { path: '', component: HomeComponent, pathMatch: 'full' },
 ];
 

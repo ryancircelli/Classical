@@ -1,13 +1,13 @@
 
 <div class="overflow-x-auto flex flex-col items-center">
-    <div class="text-4xl font-serif py-4">Trending Classes</div>
+    <div class="text-4xl  py-4">Trending Classes</div>
     <div class="rounded-2xl w-[80%] overflow-hidden">
     <table class="table w-full">
       <thead>
         <tr>
-          <th class="text-center align-middle w-24 font-serif">Rank</th>
-          <th class="text-center align-middle w-24 font-serif">Course Code</th>
-          <th class="text-right align-middle font-serif">Last Updated</th>
+          <th class="text-center align-middle w-24 ">Rank</th>
+          <th class="text-center align-middle w-24 ">Course Code</th>
+          <th class="text-right align-middle ">Last Updated</th>
         </tr>
       </thead>
       <tbody>
@@ -22,8 +22,8 @@
             <!-- net votes -->
             <span>{{ class.netVotes }}</span>
           </td>
-          <td class="text-center align-middle font-serif">{{ class.className }}</td>
-          <td class="text-right align-middle font-serif text-gray-500"> {{ class.dateUpdated && class.dateUpdated.toLocaleString() }}</td>
+          <td class="text-center align-middle ">{{ class.className }}</td>
+          <td class="text-right align-middle  text-gray-500"> {{ class.dateUpdated && class.dateUpdated.toLocaleString() }}</td>
         </tr>
       </tbody>
     </table>

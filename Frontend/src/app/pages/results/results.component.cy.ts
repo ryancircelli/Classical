@@ -26,7 +26,7 @@ describe('rankClasses()', () => {
         downvoted: false,
         className: "CIS4930",
         dateUpdated: new Date,
-        netVotes: 0
+        total_votes: 0
       },
       {
         upvotes: 4,
@@ -35,7 +35,7 @@ describe('rankClasses()', () => {
         downvoted: false,
         className: "CEN3031",
         dateUpdated: new Date,
-        netVotes: 0
+        total_votes: 0
       }]
   
       // Call the function to sort the results
@@ -49,7 +49,7 @@ describe('rankClasses()', () => {
             downvoted: false,
             className: "CEN3031",
             dateUpdated: new Date,
-            netVotes: 1
+            total_votes: 1
         },{
             upvotes: 2,
             downvotes: 4,
@@ -57,7 +57,7 @@ describe('rankClasses()', () => {
             downvoted: false,
             className: "CIS4930",
             dateUpdated: new Date,
-            netVotes: -2
+            total_votes: -2
         }
       ]
   

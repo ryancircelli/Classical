@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { ClassAPIService } from 'src/app/services/class.services';
+import { of, throwError } from 'rxjs';
 
 import { AddClassComponent } from './add-class.component';
 
@@ -18,7 +19,6 @@ function createRouterStub(): Router {
     navigate: cy.stub(),
   } as unknown as Router;
 }
-
 
 describe('submitNewClass()', () => {
 
@@ -42,30 +42,32 @@ describe('submitNewClass()', () => {
 
   it('should call addClass API and navigate when class name is valid', () => {
     classComponent.newClass = 'test123';
-    classComponent.classAPIService.addClass = cy.stub().callsFake(() => Promise.resolve());
-    classComponent.router.navigate = cy.stub().callsFake(() => Promise.resolve());
-
+    classComponent.classAPIService.addClass = cy.stub().returns(of({}));
+    classComponent.router.navigate = cy.stub().returns(Promise.resolve(true));
+  
     classComponent.submitNewClass().then(() => {
-      expect(classComponent.classAPIService.addClass).to.have.been.calledWith('test123');
-      expect(classComponent.router.navigate).to.have.been.calledWith(['/class', 'test123']);
+      expect(classComponent.classAPIService.addClass).to.be.calledWith('test123');
+      expect(classComponent.router.navigate).to.be.calledWith(['/class', 'test123']);
     });
   });
-
+  
   it('should handle API error when class already exists', () => {
     classComponent.newClass = 'cis4930';
-    classComponent.classAPIService.addClass = cy.stub().callsFake(() => Promise.reject({ text: 'Class with Name = cis4930 already exists' }));
-
+    classComponent.classAPIService.addClass = cy.stub().returns(throwError({ text: 'Class with Name = cis4930 already exists' }));
+  
     classComponent.submitNewClass().catch(errorMessage => {
       expect(errorMessage).to.equal('Class with Name = cis4930 already exists');
     });
   });
-
+  
   it('should handle general API errors', () => {
     classComponent.newClass = 'test123';
-    classComponent.classAPIService.addClass = cy.stub().callsFake(() => Promise.reject({ message: 'API error' }));
-
+    classComponent.classAPIService.addClass = cy.stub().returns(throwError({ message: 'API error' }));
+  
     classComponent.submitNewClass().catch(errorMessage => {
       expect(errorMessage).to.equal('API error');
     });
   });
+  
+
 });

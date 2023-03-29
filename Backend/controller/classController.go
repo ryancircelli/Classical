@@ -4,6 +4,7 @@ import (
 	obj "Classical/Backend/model"
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
@@ -167,7 +168,8 @@ func GetSortedClasses(w http.ResponseWriter, r *http.Request) {
 func CreateClass(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
 	if err != nil {
-		panic(err)
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 	defer db.Close()
 
@@ -175,40 +177,47 @@ func CreateClass(w http.ResponseWriter, r *http.Request) {
 	var class obj.Class
 	err = decoder.Decode(&class)
 	if err != nil {
-		panic(err)
+		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
+		return
 	}
 	stmt, err := db.Prepare("INSERT INTO class(className) VALUES(?)")
 	if err != nil {
-		panic(err.Error())
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 	defer stmt.Close()
 
 	var classes []obj.Class
 	rows, err := db.Query("SELECT * FROM class WHERE className = ?", class.ClassName)
 	if err != nil {
-		panic(err.Error())
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 	defer rows.Close()
 	// Loop through rows, using Scan to assign column data to struct fields.
 	for rows.Next() {
 		var cla obj.Class
 		if err := rows.Scan(&cla.ID, &cla.ClassName); err != nil {
-			panic(err.Error())
+			respondWithError(w, http.StatusInternalServerError, err.Error())
+			return
 		}
 		classes = append(classes, cla)
 	}
 	if err := rows.Err(); err != nil {
-		panic(err.Error())
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	if len(classes) == 1 {
-		fmt.Fprintf(w, "Class with Name = %s already exists", class.ClassName)
+		err := errors.New("Class with Name = " + class.ClassName + " already exists")
+		respondWithError(w, http.StatusConflict, err.Error())
 		return
 	}
 
 	res, err := stmt.Exec(class.ClassName)
 	if err != nil {
-		panic(err.Error())
+		respondWithError(w, http.StatusBadRequest, err.Error())
+		return
 	}
 
 	if rowsAffected, _ := res.RowsAffected(); rowsAffected == 1 {
@@ -216,7 +225,6 @@ func CreateClass(w http.ResponseWriter, r *http.Request) {
 		class.ID = int64(id)
 		respondWithJSON(w, http.StatusOK, class)
 	}
-
 }
 
 func DeleteClass(w http.ResponseWriter, r *http.Request) {
@@ -252,4 +260,15 @@ func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(code)
 	w.Write(response)
+}
+func respondWithError(w http.ResponseWriter, statusCode int, message string) {
+	response := map[string]interface{}{"error": message}
+	jsonResponse, err := json.Marshal(response)
+	if err != nil {
+		http.Error(w, "Failed to encode error message", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	w.Write(jsonResponse)
 }

@@ -8,9 +8,9 @@ import { Class } from '../types'
   providedIn: 'root'
 })
 export class ClassAPIService {
-  private apiUrl = 'http://localhost:8000';
+  public apiUrl = 'http://localhost:8000';
 
-  constructor(private http: HttpClient) {}
+  constructor(public http: HttpClient) {}
 
   getClasses(): Observable<Class[]> {
     const httpOptions = {

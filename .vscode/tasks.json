@@ -34,6 +34,18 @@
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "Start Cypress",
+      "type": "shell",
+      "command": "npx cypress open",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/frontend/"
+      }
     }
   ]
 }

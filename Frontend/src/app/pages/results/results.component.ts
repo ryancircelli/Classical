@@ -18,7 +18,7 @@ export class ResultsComponent implements OnInit {
     downvoted: false,
     className: "CIS4930",
     dateUpdated: new Date,
-    netVotes: 0
+    total_votes: 0
   },
   {
     upvotes: 4,
@@ -27,7 +27,7 @@ export class ResultsComponent implements OnInit {
     downvoted: false,
     className: "CEN3031",
     dateUpdated: new Date,
-    netVotes: 0
+    total_votes: 0
   }]
 
   constructor(private route: ActivatedRoute) { }
@@ -41,7 +41,7 @@ export class ResultsComponent implements OnInit {
 
   rankClasses(results: Class[]) {
     results.sort((a, b) => (b.upvotes - b.downvotes) - (a.upvotes - a.downvotes));
-    results.forEach((results, index) => results.netVotes = results.upvotes - results.downvotes);
+    results.forEach((results, index) => results.total_votes = results.upvotes - results.downvotes);
     return results;
   }
 }

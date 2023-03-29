@@ -8,17 +8,17 @@ import { Class } from '../types'
   providedIn: 'root'
 })
 export class ClassAPIService {
-  private apiUrl = 'http://localhost:8000';
+  public apiUrl = 'http://localhost:8000';
 
-  constructor(private http: HttpClient) {}
+  constructor(public http: HttpClient) {}
 
-  getClasses(): Observable<Class[]> {
+  getTrendingClasses(): Observable<Class[]> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Accept': 'application/json'
       })
     };
-    return this.http.get<Class[]>(`${this.apiUrl}/getClasses`, httpOptions);
+    return this.http.get<Class[]>(`${this.apiUrl}/getTrendingClasses`, httpOptions);
   }
 
   addClass(className: String): Observable<any> {

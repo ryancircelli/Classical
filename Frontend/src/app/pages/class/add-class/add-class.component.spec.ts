@@ -8,7 +8,7 @@ function createClassAPIServiceStub(): ClassAPIService {
   return {
     apiUrl: '',
     http: null,
-    getClasses: cy.stub(),
+    getTrendingClasses: cy.stub(),
     addClass: cy.stub(),
   } as unknown as ClassAPIService;
 }

@@ -1,46 +1,69 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-
-import { ClassAPIService } from './class.services'
+import { ClassAPIService } from './class.services';
+import { Class } from '../types';
 
 describe('ClassAPIService', () => {
-
   let classAPIService: ClassAPIService;
-  let httpMock: HttpTestingController;
+  let httpTestingController: HttpTestingController;
+  const apiUrl = 'http://localhost:8000';
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [ClassAPIService]
+      providers: [ClassAPIService],
     });
 
     classAPIService = TestBed.inject(ClassAPIService);
-    httpMock = TestBed.inject(HttpTestingController);
-   
-    // let apiUrl: string = 'http://localhost:8000';
-
-    // cy.intercept('GET', `${apiUrl}/getClasses`, (req) => {
-    //   req.reply(classes);
-    // }).as('backendAPI');
+    httpTestingController = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {
-    httpMock.verify();
+    httpTestingController.verify();
   });
 
-  it('test', () => {
-    let apiUrl: string = 'http://localhost:8000';
+  it('should get trending classes', () => {
+    const mockedClasses: Class[] = [
+      {
+        upvotes: 10,
+        downvotes: 2,
+        upvoted: false,
+        downvoted: false,
+        className: 'Class 1',
+        dateUpdated: new Date(),
+        total_votes: 12,
+      },
+      {
+        upvotes: 8,
+        downvotes: 4,
+        upvoted: false,
+        downvoted: false,
+        className: 'Class 2',
+        dateUpdated: new Date(),
+        total_votes: 12,
+      },
+    ];
 
-    cy.intercept('GET', `${apiUrl}/getClasses`).as('getClasses');
-    const mockResponse = [{ id: 1, className: 'Class 1' }, { id: 2, className: 'Class 2' }];
-    const request = classAPIService.getClasses();
-    cy.wait('@getClasses');
-    cy.wrap(request).then((observable) => {
-      const req = httpMock.expectOne(`${apiUrl}/getClasses`);
-      req.flush(mockResponse);
-      observable.subscribe((response) => {
-        expect(response).to.deep.equal(mockResponse);
-      });
+    classAPIService.getTrendingClasses().subscribe((classes) => {
+      expect(classes).to.deep.equal(mockedClasses);
     });
+
+    const req = httpTestingController.expectOne(`${apiUrl}/getTrendingClasses`);
+    expect(req.request.method).to.equal('GET');
+    req.flush(mockedClasses);
+  });
+
+  it('should add a class', () => {
+    const className = 'New Class';
+    const mockedResponse = { message: 'Class added successfully.' };
+
+    classAPIService.addClass(className).subscribe((response) => {
+      expect(response).to.deep.equal(mockedResponse);
+    });
+
+    const req = httpTestingController.expectOne(`${apiUrl}/createClass`);
+    expect(req.request.method).to.equal('POST');
+    expect(req.request.body).to.deep.equal({ className });
+    req.flush(mockedResponse);
   });
 });

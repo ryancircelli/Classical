@@ -6,7 +6,7 @@ export default defineConfig({
       framework: "angular",
       bundler: "webpack",
     },
-    specPattern: ["**/*.cy.ts", "**/*.spec.ts"],
+    specPattern: ["**/*.cy.ts"],
   },
 
   e2e: {

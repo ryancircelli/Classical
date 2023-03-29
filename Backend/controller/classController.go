@@ -161,8 +161,7 @@ func GetSortedClasses(w http.ResponseWriter, r *http.Request) {
 		log.Fatal(err)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(classes)
+	respondWithJSON(w, http.StatusOK, classes)
 }
 
 func CreateClass(w http.ResponseWriter, r *http.Request) {

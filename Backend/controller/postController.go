@@ -110,7 +110,6 @@ func DecreasePostVotes(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetClassPosts(w http.ResponseWriter, r *http.Request) {
-	//w.Header().Set("Content-Type", "application/json")
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
 	if err != nil {
 		panic(err)
@@ -130,6 +129,10 @@ func GetClassPosts(w http.ResponseWriter, r *http.Request) {
 			panic(err.Error())
 		}
 		posts = append(posts, post)
+	}
+	if len(posts) == 0 {
+		fmt.Fprintf(w, "Class with id = %v does not have any posts", post.ClassID)
+		return
 	}
 	respondWithJSON(w, http.StatusOK, posts)
 }

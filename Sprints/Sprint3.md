@@ -144,11 +144,26 @@ Implement website header and navigation bar
 
 ### **Issues your team planned to address**
 
-- Create addVote() endpoint with logic
+Create addVote() endpoint with logic
 
-- Create searchClass() (sorted based on upvotes) endpoint with logic
+- Task is done when there is a specific endpoint that can be called that will add one vote to a specific post's upvote number via post's ID
+- Create an SQL query to get specific post ID and add 1 to the current upvotes of the post
+- Send messages back
+- ~1 hour
 
-- Create getTrendingClasses endpoint with logic (ranked by total upvotes for all posts)
+Create searchClass() (sorted based on upvotes) endpoint with logic
+
+- Create an SQL query to get all classes and return correct class based on class ID
+- Task is done when there is a specific endpoint that can be called that will lists posts based on getClassPoints()
+- ~1 hour
+
+Create getTrendingClasses endpoint with logic (ranked by total upvotes for all posts)
+
+- Task is done when there is a specific endpoint that can be called to return a sorted list(based on most post upvotes)
+- Create a SQL query to get the classes
+- Sort post by most upvotes
+- Send sorted posts object
+- ~1 hour
 
 ### **Issues successfully completed**
 
@@ -158,6 +173,78 @@ Implement website header and navigation bar
 
 ### **Which ones didn't and why?**
 
--
+- None
 
--
+### Backend Unit Test Cases
+
+- TestGetClasses
+  Tests that the http request can be sent across to the database and the correct json output is received
+
+- TestCreateClass
+  Should send a json object and a class will be created and stored in the database. Json object of the new class is sent back
+
+- TestDeleteClass
+  Should send a request with the class name that is to be deleted attached and that class will be deleted
+
+- TestCreatePost
+  Should send a json object with the post information inside and the new post will be stored in the database
+
+- TestGetPostsByClassID
+  Should send a request with the class ID as a variable and the posts will be returned as a json oject
+
+- TestGetClassesByName
+  Should send a request with the class name as a variable and the class will be returned as a json object
+
+- TestGetTrendingClass
+  Should send a request and a json object with the classes listed in descending order based on total_votes will be sent back
+
+### Updated Backend API Documentation
+
+## _Prequisites_
+
+1. Install MySQL
+2. Startup MySQL
+3. Connect to SQL localhost at port 3306 in MySQL workbench
+   -username: root
+   -password: password123
+   WARNING: may have to edit above credentials this based on SQL database computer settings
+   -This can be done by editing the file "db/db.go" and the statement _DB, err = sql.Open("mysql", "{username}:{password}@tcp(localhost:{port})/{schemaName}")_
+
+4. Create SQL schema named "classical"
+5. Run SQL queries in "data-access/create-tables.sql" to create the necessary tables by copy pasting the commands
+6. Install Go
+
+---
+
+_Running the server_
+
+1. Run the command "go run main.go"
+   - Make sure that "Connected"
+2. Go to Postman and follow API requests below to populate database
+
+_Create Class_
+![Alt text](/Backend/assets/createClass.png?raw=true "Create Class")
+
+_Delete Class_
+![Alt text](/Backend/assets/deleteClass.png?raw=true "Delete Class")
+
+_Get Classes_
+![Alt text](/Backend/assets/getClasses.png?raw=true "Get Classes")
+
+_Create Post_
+![Alt text](/Backend/assets/createPost.png?raw=true "Create Post")
+
+_Get Posts By Class Id_
+![Alt text](/Backend/assets/getPostByClassID.png?raw=true "Get Posts By Class Id")
+
+_Increase Post Votes_
+![Alt text](/Backend/assets/increasePostVotes.png?raw=true "increase post Votes")
+
+_Decrease Post Votes_
+![Alt text](/Backend/assets/increasePostVotes.png?raw=true "Decrease post votes is the same")
+
+_Get Trending Classes_
+![Alt text](/Backend/assets/getTrendingClasses.png?raw=true "Get Trending Classes")
+
+_Get Classes By Name_
+![Alt text](/Backend/assets/searchClassesByName.png?raw=true "Get Classes By Name")

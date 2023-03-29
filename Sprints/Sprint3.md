@@ -54,43 +54,81 @@
     Grab trending posts from backend, auto-rank posts by popularity in ranked list, display ranked list on main page
     This task is done when we have a section of the main page with functional hyperlinks to trending/popular classes
     ~1h
+14. Create class creation component, and make http POST
+    Implement class component to add class to the database.
+    The user is able to add classes, without duplicates being created
+    ~1h
 
 ### **Issues your team planned to address**
 
-Create an angular dev environment
+Create class creation component, and make http POST
+    Implement class component to add class to the database.
+    The user is able to add classes, without duplicates being created
+    ~1h
 
-- Install: Node.js, npm, Angular CLI & Git CLI (if needed)
-- This task is done when the developer is able to code via Angular with VSCode and push changes to GitHub
-- ~1h
+Add trending posts on main page with getTrendingClasses
+    Grab trending posts from backend, auto-rank posts by popularity in ranked list, display ranked list on main page
+    This task is done when we have a section of the main page with functional hyperlinks to trending/popular classes
+    ~1h
+   
+Polish class posts UI
+    implement asthetic links with names chosen by user, sort posts by upvotes, etc.
+    This task will be done when the class post UI is asthetically pleasing and functional
+    ~1h
 
-Install some kind of component library
-
-- Research component libraries and install the one that matches our design
-- This task is done when a component library has been installed and tested on the main page.
-- ~1h
-
-Implement hello world on the main page, a page for viewing posts, and a page for search results
-
-- Create pages on angular and implement navigation by url
-- This task is done when the user can switch between different pages by the url
-- ~1h
-
-Implement website header and navigation bar
-
-- Pick a color scheme, create a header, use tailwind and daisyUI to design buttons
-- This task is done when we have buttons that link to different pages/search bars on the Classical site
-- ~1h
+implement upvote/downvote ui
+   Design a ranking system, sort posts by votes
+   This task will be done when users are able to use the up/downvote button
+   ~1h
 
 ### **Issues successfully completed**
 
-- Create an angular dev environment
-- Install some kind of component library
-- Implement hello world on the main page, a page for viewing posts, and a page for search results
+Create class creation component, and make http POST
+    Implement class component to add class to the database.
+    The user is able to add classes, without duplicates being created
+    ~1h
+
+Add trending posts on main page with getTrendingClasses
+    Grab trending posts from backend, auto-rank posts by popularity in ranked list, display ranked list on main page
+    This task is done when we have a section of the main page with functional hyperlinks to trending/popular classes
+    ~1h
+   
+Polish class posts UI
+    implement asthetic links with names chosen by user, sort posts by upvotes, etc.
+    This task will be done when the class post UI is asthetically pleasing and functional
+    ~1h
+
+implement upvote/downvote ui
+   Design a ranking system, sort posts by votes
+   This task will be done when users are able to use the up/downvote button
+   ~1h
 
 ### **Which ones didn't and why?**
 
-- Implement website header and navigation bar
-  - This issue was not completed becuase our team needs to meet to decide on a color scheme and UI inspiration.
+N/A
+
+### **All Frontend Unit Tests Completed**
+
+search E2E
+   Search Parameter Test
+
+add-class component
+   should set errorMessage when class name is too short or too long
+   should call addClass API and navigate when class name is valid
+   should handle API error when class already exists
+   should handle general API errors
+
+class component
+   should create
+
+class services
+   should get trending classes
+   should add a class
+
+home component
+   should create the component
+   should fetch trending classes on ngOnInit
+   should handle empty trending classes
 
 ---
 

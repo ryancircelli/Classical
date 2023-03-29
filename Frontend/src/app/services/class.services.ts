@@ -12,13 +12,13 @@ export class ClassAPIService {
 
   constructor(public http: HttpClient) {}
 
-  getClasses(): Observable<Class[]> {
+  getTrendingClasses(): Observable<Class[]> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Accept': 'application/json'
       })
     };
-    return this.http.get<Class[]>(`${this.apiUrl}/getClasses`, httpOptions);
+    return this.http.get<Class[]>(`${this.apiUrl}/getTrendingClasses`, httpOptions);
   }
 
   addClass(className: String): Observable<any> {

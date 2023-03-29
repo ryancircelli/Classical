@@ -15,7 +15,7 @@ export class HomeComponent {
   constructor(private classAPIService: ClassAPIService ) { }
 
   ngOnInit(): void {
-    this.classAPIService.getClasses().subscribe(data => {
+    this.classAPIService.getTrendingClasses().subscribe(data => {
       this.trending = data;
       console.log(data)
     });

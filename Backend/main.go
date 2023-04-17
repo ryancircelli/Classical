@@ -30,6 +30,7 @@ func main() {
 	router.HandleFunc("/increasePostVotes/{postID}", controller.IncreasePostVote).Methods("PUT")
 	router.HandleFunc("/decreasePostVotes/{postID}", controller.DecreasePostVotes).Methods("PUT")
 	router.HandleFunc("/getClassesByName/{className}", controller.GetClassByName).Methods("GET")
+	router.HandleFunc("/getClassesByFirstLetters/{className}", controller.GetClassByFirstThreeLetters).Methods("GET")
 	router.HandleFunc("/getTrendingClasses", controller.GetSortedClasses).Methods("GET")
 
 	// router.HandleFunc("/posts", createPost).Methods("POST")

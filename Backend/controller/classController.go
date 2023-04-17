@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 
@@ -114,6 +115,78 @@ func GetClassByName(w http.ResponseWriter, r *http.Request) {
 		respondWithJSON(w, http.StatusBadRequest, nil)
 	} else {
 		jsonData, err := json.Marshal(class)
+		if err != nil {
+			panic(err.Error())
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write(jsonData)
+	}
+}
+
+func GetClassByFirstThreeLetters(w http.ResponseWriter, r *http.Request) {
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	if err != nil {
+		panic(err)
+	}
+
+	params := mux.Vars(r)
+	searchParam := strings.ToLower(params["className"])
+
+	// construct the SQL query to search for matching classes
+	query := "SELECT id, className FROM class WHERE LOWER(className) LIKE ?"
+
+	if len(searchParam) == 2 {
+		query += " OR LOWER(className) LIKE ?"
+	}
+
+	if len(searchParam) == 3 {
+		query += " OR LOWER(className) LIKE ?"
+	}
+
+	if len(searchParam) == 4 {
+		query += " OR LOWER(className) LIKE ?"
+	}
+
+	// execute the SQL query with the appropriate search patterns
+	var args []interface{}
+	args = append(args, searchParam+"%")
+
+	if len(searchParam) == 2 {
+		args = append(args, searchParam[0:2]+"%")
+	}
+
+	if len(searchParam) == 3 {
+		args = append(args, searchParam[0:3]+"%")
+	}
+
+	if len(searchParam) == 4 {
+		args = append(args, searchParam[0:3]+"_"+string(searchParam[3])+"%")
+	}
+
+	result, err := db.Query(query, args...)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	defer result.Close()
+
+	var classes []obj.ClassWithoutTotalVotes
+
+	for result.Next() {
+		var class obj.ClassWithoutTotalVotes
+		err := result.Scan(&class.ID, &class.ClassName)
+		if err != nil {
+			panic(err.Error())
+		}
+		classes = append(classes, class)
+	}
+
+	if len(classes) == 0 {
+		respondWithJSON(w, http.StatusBadRequest, nil)
+	} else {
+		jsonData, err := json.Marshal(classes)
 		if err != nil {
 			panic(err.Error())
 		}

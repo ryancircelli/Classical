@@ -47,46 +47,6 @@ func GetClasses(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, classesWithoutTotalVotes)
 }
 
-func getSortedClasses(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("mysql", "username:password@tcp(127.0.0.1:3306)/your_database")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer db.Close()
-
-	query := `
-		SELECT c.id, c.className, SUM(p.postVotes) as total_votes
-		FROM class c
-		LEFT JOIN post p ON c.id = p.classID
-		GROUP BY c.id, c.className
-		ORDER BY total_votes DESC;
-	`
-
-	rows, err := db.Query(query)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer rows.Close()
-
-	classes := make([]obj.Class, 0)
-
-	for rows.Next() {
-		var class obj.Class
-		err := rows.Scan(&class.ID, &class.ClassName, &class.TotalVotes)
-		if err != nil {
-			log.Fatal(err)
-		}
-		classes = append(classes, class)
-	}
-
-	if err := rows.Err(); err != nil {
-		log.Fatal(err)
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(classes)
-}
-
 func GetClasessByName(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
 	if err != nil {
@@ -127,8 +87,9 @@ func GetClasessByName(w http.ResponseWriter, r *http.Request) {
 		classes = append(classes, class)
 	}
 
+	// Check if there are any classes
 	if len(classes) == 0 {
-		respondWithJSON(w, http.StatusNotFound, nil)
+		respondWithJSON(w, http.StatusNotFound, []obj.ClassWithoutTotalVotes{})
 	} else {
 		jsonData, err := json.Marshal(classes)
 		if err != nil {

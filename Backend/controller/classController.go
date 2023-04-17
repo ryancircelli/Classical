@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"strings"
+	"regexp"
 
 	"github.com/gorilla/mux"
 
@@ -87,84 +87,28 @@ func getSortedClasses(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(classes)
 }
 
-func GetClassByName(w http.ResponseWriter, r *http.Request) {
+func GetClasessByName(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
 	if err != nil {
 		panic(err)
 	}
 
 	params := mux.Vars(r)
-	result, err := db.Query("SELECT id, className from class WHERE className = ?", params["className"])
+	searchTerm := params["className"]
+	var result *sql.Rows
 
+	// Check if the search term is a class number
+	match, err := regexp.MatchString(`^\d+$`, searchTerm)
 	if err != nil {
 		panic(err.Error())
 	}
-
-	defer result.Close()
-
-	var class obj.ClassWithoutTotalVotes
-
-	for result.Next() {
-		err := result.Scan(&class.ID, &class.ClassName)
-		if err != nil {
-			panic(err.Error())
-		}
-	}
-
-	if class.ClassName == "" && class.ID == 0 {
-		respondWithJSON(w, http.StatusBadRequest, nil)
+	if match {
+		// Search by class number
+		result, err = db.Query("SELECT id, className FROM class WHERE className REGEXP ? ORDER BY LENGTH(className), className", searchTerm+"[[:digit:]]*")
 	} else {
-		jsonData, err := json.Marshal(class)
-		if err != nil {
-			panic(err.Error())
-		}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		w.Write(jsonData)
+		// Search by class name
+		result, err = db.Query("SELECT id, className from class WHERE className LIKE ? ORDER BY LENGTH(className), className", searchTerm+"%")
 	}
-}
-
-func GetClassByFirstThreeLetters(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
-	if err != nil {
-		panic(err)
-	}
-
-	params := mux.Vars(r)
-	searchParam := strings.ToLower(params["className"])
-
-	// construct the SQL query to search for matching classes
-	query := "SELECT id, className FROM class WHERE LOWER(className) LIKE ?"
-
-	if len(searchParam) == 2 {
-		query += " OR LOWER(className) LIKE ?"
-	}
-
-	if len(searchParam) == 3 {
-		query += " OR LOWER(className) LIKE ?"
-	}
-
-	if len(searchParam) == 4 {
-		query += " OR LOWER(className) LIKE ?"
-	}
-
-	// execute the SQL query with the appropriate search patterns
-	var args []interface{}
-	args = append(args, searchParam+"%")
-
-	if len(searchParam) == 2 {
-		args = append(args, searchParam[0:2]+"%")
-	}
-
-	if len(searchParam) == 3 {
-		args = append(args, searchParam[0:3]+"%")
-	}
-
-	if len(searchParam) == 4 {
-		args = append(args, searchParam[0:3]+"_"+string(searchParam[3])+"%")
-	}
-
-	result, err := db.Query(query, args...)
 
 	if err != nil {
 		panic(err.Error())
@@ -184,7 +128,7 @@ func GetClassByFirstThreeLetters(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(classes) == 0 {
-		respondWithJSON(w, http.StatusBadRequest, nil)
+		respondWithJSON(w, http.StatusNotFound, nil)
 	} else {
 		jsonData, err := json.Marshal(classes)
 		if err != nil {

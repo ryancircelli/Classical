@@ -182,6 +182,25 @@ func TestGetClassesByName(t *testing.T) {
 
 }
 
+func TestGetClassesByFirstLetters(t *testing.T) {
+	req, err := http.NewRequest("GET", "/getClassesByFirstLetters/CEN3", nil)
+	if err != nil {
+		panic(err.Error())
+	}
+	req = mux.SetURLVars(req, map[string]string{"className": "CEN3"})
+	rr := httptest.NewRecorder()
+	handler := http.HandlerFunc(controller.GetClassByFirstThreeLetters)
+	handler.ServeHTTP(rr, req)
+	if status := rr.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v",
+			status, http.StatusOK)
+	}
+	expected := `[{"id":5,"className":"CEN3031"},{"id":6,"className":"CEN3032"},{"id":7,"className":"CEN3"}]`
+	if rr.Body.String() != expected {
+		t.Errorf("handler returned unexpected body: got %v want %v", rr.Body.String(), expected)
+	}
+}
+
 // getTrendingClasses test
 func TestGetTrendingClass(t *testing.T) {
 	req, err := http.NewRequest("GET", "/getTrendingClasses", nil)

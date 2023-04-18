@@ -21,6 +21,15 @@ export class ClassAPIService {
     return this.http.get<Class[]>(`${this.apiUrl}/getTrendingClasses`, httpOptions);
   }
 
+  getSearchResults(className: String): Observable<Class[]> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Accept': 'application/json'
+      })
+    };
+    return this.http.get<Class[]>(`${this.apiUrl}/getClassesByName/${className}`, httpOptions);
+  }
+
   addClass(className: String): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({

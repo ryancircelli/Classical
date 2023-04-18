@@ -11,7 +11,7 @@ import (
 // classesByName queries for albums that have the specified class name.
 func ClassesByName(name string) ([]obj.Class, error) {
 	// An albums slice to hold data from returned rows
-	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)
 	}

@@ -5,5 +5,5 @@ export type Class = {
   downvoted: boolean;
   className: string;
   dateUpdated: Date;
-  netVotes: number;
+  total_votes: number;
 }

@@ -1,0 +1,51 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Start Go",
+      "type": "shell",
+      "command": "go run main.go",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/backend/"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Angular",
+      "type": "shell",
+      "command": "ng serve --open",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/frontend/"
+      }
+    },
+    {
+      "label": "Start Both",
+      "dependsOn": ["Start Go", "Start Angular"],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "Start Cypress",
+      "type": "shell",
+      "command": "npx cypress open",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/frontend/"
+      }
+    }
+  ]
+}

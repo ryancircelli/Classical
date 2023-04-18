@@ -27,10 +27,10 @@ export class AddClassComponent {
               resolve(response);
             },
             error => {
-              console.log(error);
-              if (error.text === "Class with Name = cis4930 already exists") {
-                this.errorMessage = 'Class with Name = cis4930 already exists';
+              if (error.error.error.toLowerCase() === `Class with Name = ${this.newClass} already exists`.toLowerCase()) {
+                this.errorMessage = `A class with the name "${this.newClass}" already exists!`;
                 reject(this.errorMessage);
+                return;
               }
               this.errorMessage = error.message;
               reject(this.errorMessage);

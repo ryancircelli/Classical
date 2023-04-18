@@ -1,9 +1,15 @@
 export type Class = {
   upvotes: number;
   downvotes: number;
-  upvoted: boolean;
-  downvoted: boolean;
   className: string;
   dateUpdated: Date;
   total_votes: number;
+}
+
+export type Post = {
+  postID: number;
+  className: string;
+  postVotes: number;
+  postName: string;
+  postContent: string;
 }

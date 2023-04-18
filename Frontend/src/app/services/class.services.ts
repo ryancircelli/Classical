@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { Class } from '../types'
+import { Class, Post } from '../types'
 
 @Injectable({
   providedIn: 'root'
@@ -28,6 +28,15 @@ export class ClassAPIService {
       })
     };
     return this.http.get<Class[]>(`${this.apiUrl}/getClassesByName/${className}`, httpOptions);
+  }
+
+  getClassPosts(className: String): Observable<Post[]> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Accept': 'application/json'
+      })
+    };
+    return this.http.get<Post[]>(`${this.apiUrl}/getPostsByClassName/${className}`, httpOptions);
   }
 
   addClass(className: String): Observable<any> {

@@ -160,26 +160,23 @@ func TestGetPostsByClassID(t *testing.T) {
 
 // }
 
-// GetClassesByName test
-func TestGetClassesByName(t *testing.T) {
-	req, err := http.NewRequest("GET", "/getClassesByName/COP5000", nil)
+func TestGetClassesByFirstLetters(t *testing.T) {
+	req, err := http.NewRequest("GET", "/getClassesByFirstLetters/CEN3", nil)
 	if err != nil {
 		panic(err.Error())
 	}
-	req = mux.SetURLVars(req, map[string]string{"className": "COP5000"})
+	req = mux.SetURLVars(req, map[string]string{"className": "CEN3"})
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(controller.GetClassByName)
+	handler := http.HandlerFunc(controller.GetClasessByName)
 	handler.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",
 			status, http.StatusOK)
 	}
-	expected := `{"id":1,"className":"COP5000"}`
+	expected := `[{"id":5,"className":"CEN3031"},{"id":6,"className":"CEN3032"},{"id":7,"className":"CEN3"}]`
 	if rr.Body.String() != expected {
-		t.Errorf("handler returned unexpected body: got %v want %v",
-			rr.Body.String(), expected)
+		t.Errorf("handler returned unexpected body: got %v want %v", rr.Body.String(), expected)
 	}
-
 }
 
 // getTrendingClasses test

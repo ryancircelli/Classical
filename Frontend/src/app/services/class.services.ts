@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { Class } from '../types'
+import { Class, Post } from '../types'
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +30,15 @@ export class ClassAPIService {
     return this.http.get<Class[]>(`${this.apiUrl}/getClassesByName/${className}`, httpOptions);
   }
 
+  getClassPosts(className: String): Observable<Post[]> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Accept': 'application/json'
+      })
+    };
+    return this.http.get<Post[]>(`${this.apiUrl}/getPostsByClassName/${className}`, httpOptions);
+  }
+
   addClass(className: String): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
@@ -40,5 +49,37 @@ export class ClassAPIService {
       "className": className
     };
     return this.http.post(`${this.apiUrl}/createClass`, body, httpOptions);
+  }
+
+  createClassPost(className:string, url: String): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Accept': 'application/json'
+      })
+    };
+    const body = {
+      "postClassName" : className,
+      "postContent": url,
+      "postName" : className
+    };
+    return this.http.post(`${this.apiUrl}/createClassPost`, body, httpOptions);
+  }
+
+  increasePostVotes(className: String): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Accept': 'application/json'
+      })
+    };
+    return this.http.put(`${this.apiUrl}/increasePostVotes/${className}`, httpOptions);
+  }
+
+  decreasePostVotes(className: String): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Accept': 'application/json'
+      })
+    };
+    return this.http.put(`${this.apiUrl}/decreasePostVotes/${className}`, httpOptions);
   }
 }

@@ -4,6 +4,7 @@ export type Class = {
   className: string;
   dateUpdated: Date;
   total_votes: number;
+  lastUpdated: string;
 }
 
 export type Post = {
@@ -12,4 +13,7 @@ export type Post = {
   postVotes: number;
   postName: string;
   postContent: string;
+  upvoted: boolean;
+  downvoted: boolean;
+  timePosted: string;
 }

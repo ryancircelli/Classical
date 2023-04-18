@@ -23,13 +23,7 @@ export class ClassComponent {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.class = params.get('className') ?? "";
-      this.posts = []
-      this.classAPIService.getClassPosts(this.class).subscribe(data => {
-        this.posts = this.rankPosts(data.map(postData => ({
-          ...postData,
-          timePosted: new Date(parseInt(postData.timePosted) * 1000).toLocaleString()
-        })));
-      }); 
+      this.loadData();
     });
   }
 
@@ -52,70 +46,83 @@ export class ClassComponent {
         return;
       }
 
-      console.log(this.newPost, isWebUri(this.newPost))
+      this.classAPIService.createClassPost(this.class, this.newPost)
+        .subscribe(
+            response => {
+              this.loadData();
+            },
+            error => {
+            }
+          );
       this.newPost = "";
       this.errorMessage = ""
       resolve("");
-      // this.classAPIService.createPost(this.newPost)
-      //   .subscribe(
-      //     response => {
-      //       this.router.navigate(['/class', this.newClass]);
-      //       resolve(response);
-      //     },
-      //     error => {
-      //       console.log(error);
-      //       if (error.text === "Class with Name = cis4930 already exists") {
-      //         this.errorMessage = 'Class with Name = cis4930 already exists';
-      //         reject(this.errorMessage);
-      //       }
-      //       this.errorMessage = error.message;
-      //       reject(this.errorMessage);
-      //     }
-      //   );
     });
+
   }
 
   upvote(id: number) {
+    if (this.posts[id].downvoted) {
+      this.classAPIService.increasePostVotes(this.class).subscribe(
+        response => {},
+        error => {}
+      );
+      this.posts[id].postVotes = this.posts[id].postVotes + 1;
+    }
+    this.classAPIService.increasePostVotes(this.class).subscribe(
+      response => {},
+      error => {}
+    );
     this.posts[id].upvoted = true;
     this.posts[id].downvoted = false;
-    // this.classAPIService.increasePostVotes(this.class)
-    //   .subscribe(
-    //     response => {
-    //      this.posts[id].upvoted = true;
-    //      this.posts[id].downvoted = false;
-    //     },
-    //     error => {
-    // <div class="toast">
-    //   <div class="alert alert-info">
-    //     <div>
-    //       <span>Failed to upvote.</span>
-    //     </div>
-    //   </div>
-    // </div>
-    //     }
-    //   );
+    this.posts[id].postVotes = this.posts[id].postVotes + 1;
+  }
+
+  resetVote(id : number){
+    if (this.posts[id].upvoted) {
+      this.classAPIService.decreasePostVotes(this.class).subscribe(
+        response => {},
+        error => {}
+      );
+      this.posts[id].postVotes = this.posts[id].postVotes - 1;
+    }
+    if (this.posts[id].downvoted) {
+      this.classAPIService.increasePostVotes(this.class).subscribe(
+        response => {},
+        error => {}
+      );
+      this.posts[id].postVotes = this.posts[id].postVotes + 1;
+    }
+    this.posts[id].upvoted = false;
+    this.posts[id].downvoted = false;
   }
 
   downvote(id : number) {
+    if (this.posts[id].upvoted) {
+      this.classAPIService.decreasePostVotes(this.class).subscribe(
+        response => {},
+        error => {}
+      );
+      this.posts[id].postVotes = this.posts[id].postVotes - 1;
+    }
+    this.classAPIService.decreasePostVotes(this.class).subscribe(
+      response => {},
+      error => {}
+    );
+    this.posts[id].postVotes = this.posts[id].postVotes - 1;
     this.posts[id].upvoted = false;
     this.posts[id].downvoted = true;
-    // this.classAPIService.decreasePostVotes(this.class)
-    //   .subscribe(
-    //     response => {
-    //       this.posts[id].upvoted = false;
-    //       this.posts[id].downvoted = true;
-    //     },
-    //     error => {
-    //       //throw toast if failed
-    // <div class="toast">
-    //   <div class="alert alert-info">
-    //     <div>
-    //       <span>Failed to downvote.</span>
-    //     </div>
-    //   </div>
-    // </div>
-    //     }
-    //   );
+  }
+
+  loadData() {
+    console.log("reloading data")
+    this.posts = []
+    this.classAPIService.getClassPosts(this.class).subscribe(data => {
+      this.posts = this.rankPosts(data.map(postData => ({
+        ...postData,
+        timePosted: new Date(parseInt(postData.timePosted) * 1000).toLocaleString()
+      })));
+    }); 
   }
   
 }

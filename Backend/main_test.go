@@ -100,9 +100,9 @@ func TestGetPostsByClassID(t *testing.T) {
 	if err != nil {
 		panic(err.Error())
 	}
-	req = mux.SetURLVars(req, map[string]string{"classID": "2"})
+	req = mux.SetURLVars(req, map[string]string{"className": "COP4600"})
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(controller.GetClassPosts)
+	handler := http.HandlerFunc(controller.GetClassPostsByName)
 	handler.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v want %v",

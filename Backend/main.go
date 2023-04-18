@@ -2,13 +2,10 @@ package main
 
 import (
 	"Classical/Backend/controller"
-
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
-
-	"github.com/rs/cors"
 )
 
 func main() {
@@ -35,8 +32,23 @@ func main() {
 	// router.HandleFunc("/posts/{id}", updatePost).Methods("PUT")
 
 	// Add CORS headers to all responses
-	handler := cors.Default().Handler(router)
+	// Set the allowed methods in the CORS options
+	corsMiddleware := func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+			w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, X-Requested-With")
 
+			if r.Method == "OPTIONS" {
+				w.WriteHeader(http.StatusOK)
+				return
+			}
+
+			next.ServeHTTP(w, r)
+		})
+	}
+
+	handler := corsMiddleware(router)
 	http.ListenAndServe(":8000", handler)
 
 	// posts, err := postsByClassID(1)

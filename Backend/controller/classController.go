@@ -16,14 +16,14 @@ import (
 )
 
 func GetClasses(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)
 	}
 	defer db.Close()
 
 	var classes []obj.Class
-	result, err := db.Query("SELECT id, className from class")
+	result, err := db.Query("SELECT className, lastUpdated from class")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -31,7 +31,7 @@ func GetClasses(w http.ResponseWriter, r *http.Request) {
 
 	for result.Next() {
 		var class obj.Class
-		err := result.Scan(&class.ID, &class.ClassName)
+		err := result.Scan(&class.ClassName, &class.LastUpdated)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -48,7 +48,7 @@ func GetClasses(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetClasessByName(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)
 	}
@@ -64,10 +64,10 @@ func GetClasessByName(w http.ResponseWriter, r *http.Request) {
 	}
 	if match {
 		// Search by class number
-		result, err = db.Query("SELECT id, className FROM class WHERE className REGEXP ? ORDER BY LENGTH(className), className", searchTerm+"[[:digit:]]*")
+		result, err = db.Query("SELECT className, lastUpdated FROM class WHERE className REGEXP ? ORDER BY LENGTH(className), className", searchTerm+"[[:digit:]]*")
 	} else {
 		// Search by class name
-		result, err = db.Query("SELECT id, className from class WHERE className LIKE ? ORDER BY LENGTH(className), className", searchTerm+"%")
+		result, err = db.Query("SELECT className, lastUpdated from class WHERE className LIKE ? ORDER BY LENGTH(className), className", searchTerm+"%")
 	}
 
 	if err != nil {
@@ -76,11 +76,11 @@ func GetClasessByName(w http.ResponseWriter, r *http.Request) {
 
 	defer result.Close()
 
-	var classes []obj.ClassWithoutTotalVotes
+	var classes []obj.Class
 
 	for result.Next() {
-		var class obj.ClassWithoutTotalVotes
-		err := result.Scan(&class.ID, &class.ClassName)
+		var class obj.Class
+		err := result.Scan(&class.ClassName, &class.LastUpdated)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -102,7 +102,7 @@ func GetClasessByName(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetSortedClasses(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 
 	if err != nil {
 		panic(err)
@@ -111,13 +111,13 @@ func GetSortedClasses(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	query := `
-		SELECT c.id, c.className, COALESCE(SUM(p.postVotes), 0) as total_votes
+		SELECT c.className, c.lastUpdated, COALESCE(SUM(p.postVotes), 0) as total_votes
 		FROM class c
-		LEFT JOIN post p ON c.id = p.classID
-		GROUP BY c.id, c.className
+		LEFT JOIN post p ON c.className = p.postClassName
+		GROUP BY c.className
 		ORDER BY total_votes DESC;
 	`
-
+	//Figure this out
 	rows, err := db.Query(query)
 	if err != nil {
 		log.Fatal(err)
@@ -128,7 +128,7 @@ func GetSortedClasses(w http.ResponseWriter, r *http.Request) {
 
 	for rows.Next() {
 		var class obj.Class
-		err := rows.Scan(&class.ID, &class.ClassName, &class.TotalVotes)
+		err := rows.Scan(&class.ClassName, &class.LastUpdated, &class.TotalVotes)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -143,7 +143,7 @@ func GetSortedClasses(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateClass(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -174,7 +174,7 @@ func CreateClass(w http.ResponseWriter, r *http.Request) {
 	// Loop through rows, using Scan to assign column data to struct fields.
 	for rows.Next() {
 		var cla obj.Class
-		if err := rows.Scan(&cla.ID, &cla.ClassName); err != nil {
+		if err := rows.Scan(&cla.ClassName); err != nil {
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -198,14 +198,12 @@ func CreateClass(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if rowsAffected, _ := res.RowsAffected(); rowsAffected == 1 {
-		id, _ := res.LastInsertId()
-		class.ID = int64(id)
 		respondWithJSON(w, http.StatusOK, class)
 	}
 }
 
-func DeleteClass(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical")
+func DeleteClass(w http.ResponseWriter, r *http.Request) { //Figure this out
+	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)
 	}
@@ -214,7 +212,7 @@ func DeleteClass(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 
 	// Delete all associated posts before deleting the class
-	_, err = db.Exec("DELETE FROM post WHERE classID = (SELECT id FROM class WHERE className = ?)", params["className"])
+	_, err = db.Exec("DELETE FROM post WHERE postClassName = (SELECT className FROM class WHERE className = ?)", params["className"])
 	if err != nil {
 		panic(err.Error())
 	}

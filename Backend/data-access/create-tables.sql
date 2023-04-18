@@ -1,18 +1,20 @@
 DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS class;
 CREATE TABLE class (
-  id         INT AUTO_INCREMENT NOT NULL,
   className  VARCHAR(128) NOT NULL,
-  PRIMARY KEY (`id`)
+  lastUpdated TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  totalVotes INT NOT NULL DEFAULT 0,
+  PRIMARY KEY (`className`)
 );
 
 CREATE TABLE post (
   postID    INT AUTO_INCREMENT NOT NULL,
-  classID   INT,
-  FOREIGN KEY (classID) REFERENCES class(id),
+  postClassName   VARCHAR(128) NOT NULL,
+  FOREIGN KEY (postClassName) REFERENCES class(className),
   postName  VARCHAR(128) NOT NULL,
   postContent VARCHAR(128) NOT NULL,
   postVotes INT NOT NULL DEFAULT 0,
+  timePosted TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`postID`)
 );
 
@@ -32,16 +34,16 @@ VALUES
   ('CGS3065');
 
 INSERT INTO post
-  (classID,postName,postContent,postVotes)
+  (postClassName,postName,postContent,postVotes)
 VALUES
-  (1,"Facebook Link", "www.facebook.com", 3);
+  ("COP5000","Facebook Link", "www.facebook.com", 3);
 
 INSERT INTO post
-  (classID,postName,postContent,postVotes)
+  (postClassName,postName,postContent,postVotes)
 VALUES
-  (1,"Discord Link", "www.discord.com", 2);
+  ("COP5000","Discord Link", "www.discord.com", 2);
 
 INSERT INTO post
-  (classID,postName,postContent,postVotes)
+  (postClassName,postName,postContent,postVotes)
 VALUES
-  (2,"GroupMe Link", "www.groupme.com", 9)  
+  ("CIS4930","GroupMe Link", "www.groupme.com", 9)  

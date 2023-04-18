@@ -31,10 +31,10 @@
 ![Alt text](/Backend/assets/getClasses.png?raw=true "Get Classes")
 
 *Create Post*
-![Alt text](/Backend/assets/createPost.png?raw=true "Create Post")
+![Alt text](/Backend/assets/createClassPost.png?raw=true "Create Post")
 
-*Get Posts By Class Id*
-![Alt text](/Backend/assets/getPostByClassID.png?raw=true "Get Posts By Class Id")
+*Get Posts By Class Name*
+![Alt text](/Backend/assets/getPostByClassName.png?raw=true "Get Posts By Class Id")
 
 *Increase Post Votes*
 ![Alt text](/Backend/assets/increasePostVotes.png?raw=true "Increase Post Votes")
@@ -43,7 +43,7 @@
 ![Alt text](/Backend/assets/decreasePostVotes.png?raw=true "Decrease Post Votes")
 
 *Search Class By Name*
-![Alt text](/Backend/assets/searchClassesByName.png?raw=true "Search Class By Name")
+![Alt text](/Backend/assets/searchClasses.png?raw=true "Search Class By Name")
 
 *Get Trending Classes*
 ![Alt text](/Backend/assets/getTrendingClasses.png?raw=true "Get Trending Classes")

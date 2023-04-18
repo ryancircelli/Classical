@@ -109,7 +109,7 @@ func DecreasePostVotes(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	params := mux.Vars(r)
 	stmt, err := db.Prepare("UPDATE post SET postVotes = postVotes - 1 WHERE postClassName = ?")
-	stmt2, err2 := db.Prepare("UPDATE class SET lastUpdated = CURRENT_TIMESTAMP WHERE className = ?")
+	stmt2, err2 := db.Prepare("UPDATE class SET lastUpdated = CURRENT_TIMESTAMP, totalVotes = totalVotes - 1 WHERE className = ?")
 	if err != nil {
 		panic(err.Error())
 	}

@@ -64,10 +64,10 @@ func GetClasessByName(w http.ResponseWriter, r *http.Request) {
 	}
 	if match {
 		// Search by class number
-		result, err = db.Query("SELECT className, lastUpdated FROM class WHERE className REGEXP ? ORDER BY LENGTH(className), className", searchTerm+"[[:digit:]]*")
+		result, err = db.Query("SELECT className, lastUpdated, totalVotes FROM class WHERE className REGEXP ? ORDER BY LENGTH(className), className", searchTerm+"[[:digit:]]*")
 	} else {
 		// Search by class name
-		result, err = db.Query("SELECT className, lastUpdated from class WHERE className LIKE ? ORDER BY LENGTH(className), className", searchTerm+"%")
+		result, err = db.Query("SELECT className, lastUpdated, totalVotes from class WHERE className LIKE ? ORDER BY LENGTH(className), className", searchTerm+"%")
 	}
 
 	if err != nil {
@@ -80,7 +80,7 @@ func GetClasessByName(w http.ResponseWriter, r *http.Request) {
 
 	for result.Next() {
 		var class obj.Class
-		err := result.Scan(&class.ClassName, &class.LastUpdated)
+		err := result.Scan(&class.ClassName, &class.LastUpdated, &class.TotalVotes)
 		if err != nil {
 			panic(err.Error())
 		}

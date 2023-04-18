@@ -7,23 +7,23 @@
         <div class="w-3/4 text-left pl-6 text-xl">Link</div>
       </div>
       <div class="divide-y divide-gray-300">
-        <a class="flex items-center justify-between py-2 px-6 hover:bg-base-200 cursor-pointer" style="background-color: #2A303C;" *ngFor="let post of posts">
+        <a class="flex items-center justify-between py-2 px-6 hover:bg-base-200 cursor-pointer" style="background-color: #2A303C;" *ngFor="let post of posts; let i = index">
           <div class="flex items-center w-1/4">
             <div class="flex flex-col">
               <div style="padding: 1px;"></div>
-              <a class="btn btn-ghost btn-xs">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-up" viewBox="0 0 16 16">
+                <button class="btn btn-ghost btn-xs" style="display: flex; align-items: center;" (click)="upvote(i)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" [style.fill]="post.upvoted ? 'green' : 'white'" class="bi bi-chevron-up" viewBox="0 0 16 16">
                   <path fill-rule="evenodd" d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"/>
                   </svg>
-              </a>
+                </button>
               <div class="text-center text-xl">
                   <p>{{ post.postVotes }}</p>
               </div>
-              <a class="btn btn-ghost btn-xs" style="display: flex; align-items: center;">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-down" viewBox="0 0 16 16">
+                <button class="btn btn-ghost btn-xs" style="display: flex; align-items: center;" (click)="downvote(i)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" [style.fill]="post.downvoted ? 'red' : 'white'" class="bi bi-chevron-up" viewBox="0 0 16 16">
                     <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
                   </svg>
-                </a>                  
+                </button>                  
               <div style="padding: 1px;"></div>
             </div>
             <!-- net votes -->

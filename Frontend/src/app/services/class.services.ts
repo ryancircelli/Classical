@@ -51,6 +51,20 @@ export class ClassAPIService {
     return this.http.post(`${this.apiUrl}/createClass`, body, httpOptions);
   }
 
+  createClassPost(className:string, url: String): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Accept': 'application/json'
+      })
+    };
+    const body = {
+      "postClassName" : className,
+      "postContent": url,
+      "postName" : className
+    };
+    return this.http.post(`${this.apiUrl}/createClassPost`, body, httpOptions);
+  }
+
   increasePostVotes(className: String): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({

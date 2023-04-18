@@ -26,7 +26,7 @@ func ClassesByName(name string) ([]obj.Class, error) {
 	// Loop through rows, using Scan to assign column data to struct fields.
 	for rows.Next() {
 		var cla obj.Class
-		if err := rows.Scan(&cla.ID, &cla.ClassName); err != nil {
+		if err := rows.Scan(&cla.ClassName); err != nil {
 			return nil, f.Errorf("classesByName %q: %v", name, err)
 		}
 		classes = append(classes, cla)

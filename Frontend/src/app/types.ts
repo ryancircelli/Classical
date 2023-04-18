@@ -8,7 +8,7 @@ export type Class = {
 }
 
 export type Post = {
-  postID: number;
+  postId: number;
   className: string;
   postVotes: number;
   postName: string;

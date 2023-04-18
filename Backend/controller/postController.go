@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -47,26 +46,6 @@ func CreateClassPost(w http.ResponseWriter, r *http.Request) {
 		post.PostID = int64(id)
 		respondWithJSON(w, http.StatusOK, post)
 	}
-
-	// stmt, err := db.Prepare("INSERT INTO post(classId, postName, postContent) VALUES(?, ?, ?)")
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-	// body, err := ioutil.ReadAll(r.Body)
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-	// keyVal := make(map[string]string)
-	// json.Unmarshal(body, &keyVal)
-	// classId := keyVal["classID"]
-	// postName := keyVal["postName"]
-	// postContent := keyVal["postContent"]
-	// intVar, err := strconv.Atoi(classId)
-	// _, err = stmt.Exec(intVar, postName, postContent)
-	// if err != nil {
-	// 	panic(err.Error())
-	// }
-	// f.Fprintf(w, "New post was created")
 }
 
 func IncreasePostVote(w http.ResponseWriter, r *http.Request) {
@@ -75,8 +54,13 @@ func IncreasePostVote(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	defer db.Close()
-	params := mux.Vars(r)
-	stmt, err := db.Prepare("UPDATE post SET postVotes = postVotes + 1 WHERE postClassName = ?")
+	decoder := json.NewDecoder(r.Body)
+	var post obj.Post
+	err = decoder.Decode(&post)
+	if err != nil {
+		panic(err.Error())
+	}
+	stmt, err := db.Prepare("UPDATE post SET postVotes = postVotes + 1 WHERE postID = ?")
 	stmt2, err2 := db.Prepare("UPDATE class SET lastUpdated = CURRENT_TIMESTAMP, totalVotes = totalVotes +1 WHERE className = ?")
 	if err != nil {
 		panic(err.Error())
@@ -84,21 +68,22 @@ func IncreasePostVote(w http.ResponseWriter, r *http.Request) {
 	if err2 != nil {
 		panic(err.Error())
 	}
-	body, err := ioutil.ReadAll(r.Body)
+	defer stmt.Close()
 	if err != nil {
 		panic(err.Error())
 	}
-	keyVal := make(map[string]string)
-	json.Unmarshal(body, &keyVal)
-	_, err = stmt.Exec(params["className"])
-	_, err2 = stmt2.Exec(params["className"])
+	res, err := stmt.Exec(post.PostID)
+	_, err2 = stmt2.Exec(post.PostClassName)
 	if err != nil {
 		panic(err.Error())
 	}
 	if err2 != nil {
 		panic(err.Error())
 	}
-	fmt.Fprintf(w, "Post with className = %s was updated", params["className"])
+	if rowsAffected, _ := res.RowsAffected(); rowsAffected == 1 {
+		fmt.Fprintf(w, "Post with id = %v was updated", post.PostID)
+	}
+
 }
 
 func DecreasePostVotes(w http.ResponseWriter, r *http.Request) {
@@ -107,8 +92,13 @@ func DecreasePostVotes(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 	defer db.Close()
-	params := mux.Vars(r)
-	stmt, err := db.Prepare("UPDATE post SET postVotes = postVotes - 1 WHERE postClassName = ?")
+	decoder := json.NewDecoder(r.Body)
+	var post obj.Post
+	err = decoder.Decode(&post)
+	if err != nil {
+		panic(err.Error())
+	}
+	stmt, err := db.Prepare("UPDATE post SET postVotes = postVotes - 1 WHERE postID = ?")
 	stmt2, err2 := db.Prepare("UPDATE class SET lastUpdated = CURRENT_TIMESTAMP, totalVotes = totalVotes - 1 WHERE className = ?")
 	if err != nil {
 		panic(err.Error())
@@ -116,21 +106,22 @@ func DecreasePostVotes(w http.ResponseWriter, r *http.Request) {
 	if err2 != nil {
 		panic(err.Error())
 	}
-	body, err := ioutil.ReadAll(r.Body)
+	defer stmt.Close()
 	if err != nil {
 		panic(err.Error())
 	}
-	keyVal := make(map[string]string)
-	json.Unmarshal(body, &keyVal)
-	_, err = stmt.Exec(params["className"])
-	_, err2 = stmt2.Exec(params["className"])
+	res, err := stmt.Exec(post.PostID)
+	_, err2 = stmt2.Exec(post.PostClassName)
 	if err != nil {
 		panic(err.Error())
 	}
 	if err2 != nil {
 		panic(err.Error())
 	}
-	fmt.Fprintf(w, "Post with ID = %s was updated", params["classPostName"])
+	if rowsAffected, _ := res.RowsAffected(); rowsAffected == 1 {
+		fmt.Fprintf(w, "Post with id = %v was updated", post.PostID)
+	}
+
 }
 
 func GetClassPostsByName(w http.ResponseWriter, r *http.Request) {

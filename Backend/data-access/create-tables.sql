@@ -34,16 +34,16 @@ VALUES
   ('CGS3065');
 
 INSERT INTO post
-  (postClassName,postName,postContent,postVotes)
+  (postClassName,postName,postContent)
 VALUES
-  ("COP5000","Facebook Link", "www.facebook.com", 3);
+  ("COP5000","Facebook Link", "www.facebook.com");
 
 INSERT INTO post
-  (postClassName,postName,postContent,postVotes)
+  (postClassName,postName,postContent)
 VALUES
-  ("COP5000","Discord Link", "www.discord.com", 2);
+  ("COP5000","Discord Link", "www.discord.com");
 
 INSERT INTO post
-  (postClassName,postName,postContent,postVotes)
+  (postClassName,postName,postContent)
 VALUES
-  ("CIS4930","GroupMe Link", "www.groupme.com", 9)  
+  ("CIS4930","GroupMe Link", "www.groupme.com");

@@ -12,4 +12,6 @@ export type Post = {
   postVotes: number;
   postName: string;
   postContent: string;
+  upvoted: boolean;
+  downvoted: boolean;
 }

@@ -21,14 +21,18 @@ export class ClassComponent {
       className: "cis400",
       postVotes: 5,
       postName: "gay",
-      postContent: "https://www.google.com"
+      postContent: "https://www.google.com",
+      upvoted: false,
+      downvoted: true,
     },
     {
       postID: 2,
       className: "cis400",
       postVotes: 2,
       postName: "wow",
-      postContent: "https://www.bing.com"
+      postContent: "https://www.bing.com",
+      upvoted: false,
+      downvoted: false,
     }
   ]
 
@@ -58,7 +62,7 @@ export class ClassComponent {
       console.log(this.newPost, isWebUri(this.newPost))
       this.newPost = "";
       this.errorMessage = ""
-      resolve("gay");
+      resolve("");
       // this.classAPIService.createPost(this.newPost)
       //   .subscribe(
       //     response => {
@@ -78,4 +82,47 @@ export class ClassComponent {
     });
   }
 
+  upvote(id: number) {
+    this.posts[id].upvoted = true;
+    this.posts[id].downvoted = false;
+    // this.classAPIService.increasePostVotes(this.class)
+    //   .subscribe(
+    //     response => {
+    //      this.posts[id].upvoted = true;
+    //      this.posts[id].downvoted = false;
+    //     },
+    //     error => {
+    // <div class="toast">
+    //   <div class="alert alert-info">
+    //     <div>
+    //       <span>Failed to upvote.</span>
+    //     </div>
+    //   </div>
+    // </div>
+    //     }
+    //   );
+  }
+
+  downvote(id : number) {
+    this.posts[id].upvoted = false;
+    this.posts[id].downvoted = true;
+    // this.classAPIService.decreasePostVotes(this.class)
+    //   .subscribe(
+    //     response => {
+    //       this.posts[id].upvoted = false;
+    //       this.posts[id].downvoted = true;
+    //     },
+    //     error => {
+    //       //throw toast if failed
+    // <div class="toast">
+    //   <div class="alert alert-info">
+    //     <div>
+    //       <span>Failed to downvote.</span>
+    //     </div>
+    //   </div>
+    // </div>
+    //     }
+    //   );
+  }
+  
 }

@@ -20,13 +20,16 @@ export class ResultsComponent implements OnInit {
       this.search = params.get('search') ?? "";
       this.results = []
       this.classAPIService.getSearchResults(this.search).subscribe(data => {
-        this.results = this.rankClasses(data);
+        this.results = this.rankClasses(data.map(classData => ({
+          ...classData,
+          lastUpdated: new Date(parseInt(classData.lastUpdated) * 1000).toLocaleString()
+        })));
       }); 
     });
   }
 
   rankClasses(results: Class[]) {
-    results.sort((a, b) => a.total_votes - b.total_votes);
+    results.sort((a, b) => b.total_votes - a.total_votes);
     return results;
   }
 }

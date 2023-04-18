@@ -15,26 +15,7 @@ export class ClassComponent {
 
   class: string = ""
 
-  posts: Post[] = [
-    {
-      postID: 1,
-      className: "cis400",
-      postVotes: 5,
-      postName: "gay",
-      postContent: "https://www.google.com",
-      upvoted: false,
-      downvoted: true,
-    },
-    {
-      postID: 2,
-      className: "cis400",
-      postVotes: 2,
-      postName: "wow",
-      postContent: "https://www.bing.com",
-      upvoted: false,
-      downvoted: false,
-    }
-  ]
+  posts: Post[] = []
 
   newPost: string = "";
   errorMessage: string = "";
@@ -42,7 +23,19 @@ export class ClassComponent {
   ngOnInit(): void {
     this.route.paramMap.subscribe((params: ParamMap) => {
       this.class = params.get('className') ?? "";
+      this.posts = []
+      this.classAPIService.getClassPosts(this.class).subscribe(data => {
+        this.posts = this.rankPosts(data.map(postData => ({
+          ...postData,
+          timePosted: new Date(parseInt(postData.timePosted) * 1000).toLocaleString()
+        })));
+      }); 
     });
+  }
+
+  rankPosts(results: Post[]) {
+    results.sort((a, b) => b.postVotes - a.postVotes);
+    return results;
   }
 
   submitPost() {

@@ -16,8 +16,10 @@ export class HomeComponent {
 
   ngOnInit(): void {
     this.classAPIService.getTrendingClasses().subscribe(data => {
-      this.trending = data;
-      console.log(data)
+      this.trending = data.map(classData => ({
+        ...classData,
+        lastUpdated: new Date(parseInt(classData.lastUpdated) * 1000).toLocaleString()
+      }));
     });
   }
 }

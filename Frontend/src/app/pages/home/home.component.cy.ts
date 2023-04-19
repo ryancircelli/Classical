@@ -27,8 +27,8 @@ describe('HomeComponent', () => {
 
   it('should fetch trending classes on ngOnInit', () => {
     const trendingClasses: Class[] = [
-      { upvotes: 10, downvotes: 5, upvoted: false, downvoted: false, className: 'Class 1', dateUpdated: new Date(), total_votes: 15 },
-      { upvotes: 20, downvotes: 10, upvoted: false, downvoted: false, className: 'Class 2', dateUpdated: new Date(), total_votes: 30 },
+      { upvotes: 10, downvotes: 5, className: 'Class 1', lastUpdated: "1681836593", total_votes: 15 },
+      { upvotes: 20, downvotes: 10, className: 'Class 2', lastUpdated: "1681836593", total_votes: 30 },
     ];
 
     classAPIService.getTrendingClasses = cy.stub().returns(of(trendingClasses));
@@ -36,7 +36,12 @@ describe('HomeComponent', () => {
     component.ngOnInit();
 
     expect(classAPIService.getTrendingClasses).to.be.called;
-    expect(component.trending).to.deep.equal(trendingClasses);
+
+    const trendingClassesOutput: Class[] = [
+      { upvotes: 10, downvotes: 5, className: 'Class 1', lastUpdated: "4/18/2023, 12:49:53 PM", total_votes: 15 },
+      { upvotes: 20, downvotes: 10, className: 'Class 2', lastUpdated: "4/18/2023, 12:49:53 PM", total_votes: 30 },
+    ];
+    expect(component.trending).to.deep.equal(trendingClassesOutput);
   });
 
   it('should handle empty trending classes', () => {

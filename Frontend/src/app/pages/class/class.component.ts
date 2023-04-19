@@ -62,14 +62,15 @@ export class ClassComponent {
   }
 
   upvote(id: number) {
+    if (this.posts[id].upvoted === true) return;
     if (this.posts[id].downvoted) {
-      this.classAPIService.increasePostVotes(this.class).subscribe(
+      this.classAPIService.increasePostVotes(this.class, this.posts[id].postId).subscribe(
         response => {},
         error => {}
       );
       this.posts[id].postVotes = this.posts[id].postVotes + 1;
     }
-    this.classAPIService.increasePostVotes(this.class).subscribe(
+    this.classAPIService.increasePostVotes(this.class, this.posts[id].postId).subscribe(
       response => {},
       error => {}
     );
@@ -80,14 +81,14 @@ export class ClassComponent {
 
   resetVote(id : number){
     if (this.posts[id].upvoted) {
-      this.classAPIService.decreasePostVotes(this.class).subscribe(
+      this.classAPIService.decreasePostVotes(this.class, this.posts[id].postId).subscribe(
         response => {},
         error => {}
       );
       this.posts[id].postVotes = this.posts[id].postVotes - 1;
     }
     if (this.posts[id].downvoted) {
-      this.classAPIService.increasePostVotes(this.class).subscribe(
+      this.classAPIService.increasePostVotes(this.class, this.posts[id].postId).subscribe(
         response => {},
         error => {}
       );
@@ -97,15 +98,16 @@ export class ClassComponent {
     this.posts[id].downvoted = false;
   }
 
-  downvote(id : number) {
+  downvote(id: number) {
+    if (this.posts[id].downvoted === true) return;
     if (this.posts[id].upvoted) {
-      this.classAPIService.decreasePostVotes(this.class).subscribe(
+      this.classAPIService.decreasePostVotes(this.class, this.posts[id].postId).subscribe(
         response => {},
         error => {}
       );
       this.posts[id].postVotes = this.posts[id].postVotes - 1;
     }
-    this.classAPIService.decreasePostVotes(this.class).subscribe(
+    this.classAPIService.decreasePostVotes(this.class, this.posts[id].postId).subscribe(
       response => {},
       error => {}
     );

@@ -65,21 +65,30 @@ export class ClassAPIService {
     return this.http.post(`${this.apiUrl}/createClassPost`, body, httpOptions);
   }
 
-  increasePostVotes(className: String): Observable<any> {
+  increasePostVotes(className: String, postID: number): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Accept': 'application/json'
       })
     };
-    return this.http.put(`${this.apiUrl}/increasePostVotes/${className}`, httpOptions);
+    console.log(postID)
+    const body = {
+      "postID" : postID,
+      "postClassName": className,
+    };
+    return this.http.post(`${this.apiUrl}/increasePostVotes`, body, httpOptions);
   }
 
-  decreasePostVotes(className: String): Observable<any> {
+  decreasePostVotes(className: String, postID: number): Observable<any> {
     const httpOptions = {
       headers: new HttpHeaders({
         'Accept': 'application/json'
       })
     };
-    return this.http.put(`${this.apiUrl}/decreasePostVotes/${className}`, httpOptions);
+    const body = {
+      "postID" : postID,
+      "postClassName": className,
+    };
+    return this.http.post(`${this.apiUrl}/decreasePostVotes`, body, httpOptions);
   }
 }

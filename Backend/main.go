@@ -14,22 +14,23 @@ import (
 func main() {
 
 	//db.Connect()
+	classController := controller.NewClassController()
+	postController := controller.NewPostController()
 
 	router := mux.NewRouter()
 	//class API endpoints and functionality
-	router.HandleFunc("/getClasses", controller.GetClasses).Methods("GET")
-	router.HandleFunc("/createClass", controller.CreateClass).Methods("POST")
-	router.HandleFunc("/deleteClass/{className}", controller.DeleteClass).Methods("DELETE")
+	router.HandleFunc("/getClasses", classController.GetClasses).Methods("GET")
+
+	router.HandleFunc("/createClass", classController.CreateClass).Methods("POST")
+	router.HandleFunc("/deleteClass/{className}", classController.DeleteClass).Methods("DELETE")
+	router.HandleFunc("/getTrendingClasses", classController.GetSortedClasses).Methods("GET")
+	router.HandleFunc("/getClassesByName/{className}", classController.GetClasessByName).Methods("GET")
 
 	//post API endpoints and functionality
-	router.HandleFunc("/createClassPost", controller.CreateClassPost).Methods("POST")
-	router.HandleFunc("/getPostsByClassName/{className}", controller.GetClassPostsByName).Methods("GET")
-
-	//API call for post votes
-	router.HandleFunc("/increasePostVotes", controller.IncreasePostVote).Methods("POST")
-	router.HandleFunc("/decreasePostVotes", controller.DecreasePostVotes).Methods("POST")
-	router.HandleFunc("/getClassesByName/{className}", controller.GetClasessByName).Methods("GET")
-	router.HandleFunc("/getTrendingClasses", controller.GetSortedClasses).Methods("GET")
+	router.HandleFunc("/createClassPost", postController.CreateClassPost).Methods("POST")
+	router.HandleFunc("/getPostsByClassName/{className}", postController.GetClassPostsByName).Methods("GET")
+	router.HandleFunc("/increasePostVotes", postController.IncreasePostVote).Methods("POST")
+	router.HandleFunc("/decreasePostVotes", postController.DecreasePostVotes).Methods("POST")
 
 	// Add CORS headers to all responses
 	handler := cors.Default().Handler(router)

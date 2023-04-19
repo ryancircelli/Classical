@@ -15,7 +15,21 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-func GetClasses(w http.ResponseWriter, r *http.Request) {
+type ClassController interface {
+	GetClasses(http.ResponseWriter, *http.Request)
+	CreateClass(http.ResponseWriter, *http.Request)
+	DeleteClass(http.ResponseWriter, *http.Request)
+	GetSortedClasses(w http.ResponseWriter, r *http.Request)
+	GetClasessByName(w http.ResponseWriter, r *http.Request)
+}
+
+type classControllerImpl struct{}
+
+func NewClassController() ClassController {
+	return &classControllerImpl{}
+}
+
+func (c *classControllerImpl) GetClasses(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)
@@ -47,7 +61,7 @@ func GetClasses(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, classesWithoutTotalVotes)
 }
 
-func GetClasessByName(w http.ResponseWriter, r *http.Request) {
+func (c *classControllerImpl) GetClasessByName(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)
@@ -101,7 +115,7 @@ func GetClasessByName(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func GetSortedClasses(w http.ResponseWriter, r *http.Request) {
+func (c *classControllerImpl) GetSortedClasses(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 
 	if err != nil {
@@ -142,7 +156,7 @@ func GetSortedClasses(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, classes)
 }
 
-func CreateClass(w http.ResponseWriter, r *http.Request) {
+func (c *classControllerImpl) CreateClass(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
@@ -202,7 +216,7 @@ func CreateClass(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func DeleteClass(w http.ResponseWriter, r *http.Request) { //Figure this out
+func (c *classControllerImpl) DeleteClass(w http.ResponseWriter, r *http.Request) { //Figure this out
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)

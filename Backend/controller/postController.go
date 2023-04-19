@@ -11,7 +11,20 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func CreateClassPost(w http.ResponseWriter, r *http.Request) {
+type PostController interface {
+	CreateClassPost(http.ResponseWriter, *http.Request)
+	IncreasePostVote(w http.ResponseWriter, r *http.Request)
+	DecreasePostVotes(w http.ResponseWriter, r *http.Request)
+	GetClassPostsByName(w http.ResponseWriter, r *http.Request)
+}
+
+type postControllerImpl struct{}
+
+func NewPostController() PostController {
+	return &postControllerImpl{}
+}
+
+func (c *postControllerImpl) CreateClassPost(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)
@@ -48,7 +61,7 @@ func CreateClassPost(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func IncreasePostVote(w http.ResponseWriter, r *http.Request) {
+func (c *postControllerImpl) IncreasePostVote(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)
@@ -86,7 +99,7 @@ func IncreasePostVote(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func DecreasePostVotes(w http.ResponseWriter, r *http.Request) {
+func (c *postControllerImpl) DecreasePostVotes(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)
@@ -124,7 +137,7 @@ func DecreasePostVotes(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetClassPostsByName(w http.ResponseWriter, r *http.Request) {
+func (c *postControllerImpl) GetClassPostsByName(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)

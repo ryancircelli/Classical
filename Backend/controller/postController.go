@@ -11,7 +11,20 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func CreateClassPost(w http.ResponseWriter, r *http.Request) {
+type PostController interface {
+	CreateClassPost(http.ResponseWriter, *http.Request)
+	IncreasePostVote(w http.ResponseWriter, r *http.Request)
+	DecreasePostVotes(w http.ResponseWriter, r *http.Request)
+	GetClassPostsByName(w http.ResponseWriter, r *http.Request)
+}
+
+type postControllerImpl struct{}
+
+func NewPostController() PostController {
+	return &postControllerImpl{}
+}
+
+func (c *postControllerImpl) CreateClassPost(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)
@@ -44,11 +57,23 @@ func CreateClassPost(w http.ResponseWriter, r *http.Request) {
 	if rowsAffected, _ := res.RowsAffected(); rowsAffected == 1 {
 		id, _ := res.LastInsertId()
 		post.PostID = int64(id)
-		respondWithJSON(w, http.StatusOK, post)
+		var returnPost obj.Post
+		result, err := db.Query("SELECT * FROM post WHERE postClassName = ?", post.PostClassName)
+		if err != nil {
+			panic(err.Error())
+		}
+		defer result.Close()
+		for result.Next() {
+			err := result.Scan(&returnPost.PostID, &returnPost.PostClassName, &returnPost.PostName, &returnPost.PostContent, &returnPost.PostVotes, &returnPost.TimePosted)
+			if err != nil {
+				panic(err.Error())
+			}
+		}
+		respondWithJSON(w, http.StatusOK, returnPost)
 	}
 }
 
-func IncreasePostVote(w http.ResponseWriter, r *http.Request) {
+func (c *postControllerImpl) IncreasePostVote(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)
@@ -86,7 +111,7 @@ func IncreasePostVote(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func DecreasePostVotes(w http.ResponseWriter, r *http.Request) {
+func (c *postControllerImpl) DecreasePostVotes(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)
@@ -124,7 +149,7 @@ func DecreasePostVotes(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func GetClassPostsByName(w http.ResponseWriter, r *http.Request) {
+func (c *postControllerImpl) GetClassPostsByName(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("mysql", "root:password123@tcp(localhost:3306)/classical?parseTime=true")
 	if err != nil {
 		panic(err)

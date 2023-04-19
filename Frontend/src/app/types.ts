@@ -2,7 +2,6 @@ export type Class = {
   upvotes: number;
   downvotes: number;
   className: string;
-  dateUpdated: Date;
   total_votes: number;
   lastUpdated: string;
 }

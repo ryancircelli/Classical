@@ -62,6 +62,7 @@ export class ClassComponent {
   }
 
   upvote(id: number) {
+    if (this.posts[id].upvoted === true) return;
     if (this.posts[id].downvoted) {
       this.classAPIService.increasePostVotes(this.class, this.posts[id].postId).subscribe(
         response => {},
@@ -97,7 +98,8 @@ export class ClassComponent {
     this.posts[id].downvoted = false;
   }
 
-  downvote(id : number) {
+  downvote(id: number) {
+    if (this.posts[id].downvoted === true) return;
     if (this.posts[id].upvoted) {
       this.classAPIService.decreasePostVotes(this.class, this.posts[id].postId).subscribe(
         response => {},

@@ -188,7 +188,7 @@ func (c *classControllerImpl) CreateClass(w http.ResponseWriter, r *http.Request
 	// Loop through rows, using Scan to assign column data to struct fields.
 	for rows.Next() {
 		var cla obj.Class
-		if err := rows.Scan(&cla.ClassName); err != nil {
+		if err := rows.Scan(&cla.ClassName, &cla.LastUpdated, &cla.TotalVotes); err != nil {
 			respondWithError(w, http.StatusInternalServerError, err.Error())
 			return
 		}
@@ -212,7 +212,19 @@ func (c *classControllerImpl) CreateClass(w http.ResponseWriter, r *http.Request
 	}
 
 	if rowsAffected, _ := res.RowsAffected(); rowsAffected == 1 {
-		respondWithJSON(w, http.StatusOK, class)
+		var returnClass obj.Class
+		result, err := db.Query("SELECT * FROM class WHERE className = ?", class.ClassName)
+		if err != nil {
+			panic(err.Error())
+		}
+		defer result.Close()
+		for result.Next() {
+			err := result.Scan(&returnClass.ClassName, &returnClass.LastUpdated, &returnClass.TotalVotes)
+			if err != nil {
+				panic(err.Error())
+			}
+			respondWithJSON(w, http.StatusOK, returnClass)
+		}
 	}
 }
 

@@ -57,7 +57,19 @@ func (c *postControllerImpl) CreateClassPost(w http.ResponseWriter, r *http.Requ
 	if rowsAffected, _ := res.RowsAffected(); rowsAffected == 1 {
 		id, _ := res.LastInsertId()
 		post.PostID = int64(id)
-		respondWithJSON(w, http.StatusOK, post)
+		var returnPost obj.Post
+		result, err := db.Query("SELECT * FROM post WHERE postClassName = ?", post.PostClassName)
+		if err != nil {
+			panic(err.Error())
+		}
+		defer result.Close()
+		for result.Next() {
+			err := result.Scan(&returnPost.PostID, &returnPost.PostClassName, &returnPost.PostName, &returnPost.PostContent, &returnPost.PostVotes, &returnPost.TimePosted)
+			if err != nil {
+				panic(err.Error())
+			}
+		}
+		respondWithJSON(w, http.StatusOK, returnPost)
 	}
 }
 
